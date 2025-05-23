@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Approval</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #e67e22; /* Orange color */
+        }
+
+        p {
+            font-size: 1.2em;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background-color: #3498db; /* Blue color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9; /* Darker blue on hover */
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+    <script>
+        function confirmLogout(event) {
+            // Prevent the default action of the link
+            event.preventDefault();
+
+            // Show confirmation dialog
+            const confirmed = confirm("Are you sure you want to log out?");
+            if (confirmed) {
+                window.location.href = "/logout"; // Adjust to your actual logout route
+            }
+}
+    </script>
+</head>
+<body>
+    <h1>PENDING</h1>
+    <p>Your account is still pending. Please check your email for further updates.</p>
+    
+    
+    <a href="#" onclick="confirmLogout(event)">
+          <button type="submit">Log Out</button>
+        </a>
+
+    <footer>
+        &copy; From : Media Verse Hub
+    </footer>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books and Media</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="java.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" 
+          integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+
+    
+
+</head>
+<body>
+    <header>
+    <a href="#" class="logo"><img src="../static/image/loglog2.png" alt="logo"></a>
+    <ul class="navmenu">
+        <li><a href="#">Home</a></li>
+        <li><a href="{{ url_for('shop') }}">Shop</a></li>
+        <li><a href="#categories">Categories</a></li> <!-- Update this link -->
+       
+    </ul>
+
+    
+
+    <div class="navicon"> 
+        <!-- Update the link for the search icon -->
+        <a href="{{ url_for('shop') }}"><img src="../static/image/searchh.png" alt="Search"></a>
+        <a href="{{ url_for('profile') }}"><img src="../static/image/user (1).png" alt="User"></a>
+        <a href="{{ url_for('cart') }}"><img src="../static/image/shopping-cart.png" alt="Cart"></a>
+        <a href="#"><img src="../static/image/menu.png" alt="Menu"></a>
+    </div>
+
+    </header>
+
+    <section class="main-home">
+        <div class="main-text">
+            <h2>Books Collection</h2>
+            <h1>New Book</h1>
+            <h3>“Books are a uniquely portable magic.” — Stephen King</h3>
+        </div>
+    </section>  
+
+    <section class="categories" id="categories">
+        <div class="categories-wrapper">
+            <h2>CATEGORY</h2>
+            <div class="category-container">
+                <div class="category">
+                    <a href="{{ url_for('shop') }}">
+                        <img src="../static/image/fictionlogo.png" alt="Fiction & Non-Fiction Books">
+                        <p>Fiction & Non-Fiction</p>
+                    </a>
+                </div>
+                <div class="category">
+                    <a href="{{ url_for('shop') }}">
+                        <img src="../static/image/maglogo.png" alt="Magazines & Periodicals">
+                        <p>Magazine & Periodical</p>
+                    </a>
+                </div>
+                <div class="category">
+                    <a href="{{ url_for('shop') }}">
+                        <img src="../static/image/cdlogo.png" alt="Music CDs & Vinyl Records">
+                        <p>CDs & Vinyl Records</p>
+                    </a>
+                </div>
+                <div class="category">
+                    <a href="{{ url_for('shop') }}">
+                        <img src="../static/image/movlogo.png" alt="Movie DVDs & Blu-ray">
+                        <p>Movie DVDs & Blu-ray</p>
+                    </a>
+                </div>
+                <div class="category">
+                    <a href="{{ url_for('shop') }}">
+                        <img src="../static/image/vidlogo.png" alt="Video Games & Consoles">
+                        <p>Video Games & Console</p>
+                    </a>
+                </div>
+                <div class="category">
+                    <a href="{{ url_for('shop') }}">
+                        <img src="../static/image/edulogo.png" alt="Educational DVDs">
+                        <p>Educational DVDs</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+    <div class="container my-5">
+        <div class="text-center mb-4">
+            <h1 class="bossing text-uppercase fw-bold">Best Seller</h1>
+            <p class="okay">Discover our top picks for this season</p>
+        </div>
+        <div id="bestSellerCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <!-- Carousel Item -->
+                <div class="carousel-item active">
+                    <div class="d-flex justify-content-center">
+                        <!-- Phonics -->
+                        <div class="card product-card mx-2 shadow-sm">
+                            <div class="card-img-container position-relative">
+                                <img src="../static/image/phonics.jpeg.jpg" class="d-block w-100 rounded" alt="Phonics">
+                                <span class="badge bg-success position-absolute top-0 start-0 m-2">New</span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">Phonics</h5>
+                                <p class="text-muted">Learn with fun!</p>
+                                <div class="price">₱120.00</div>
+                                <a href="{{ url_for('shop') }}" class="btn btn-outline-primary mt-2">Shop now</a>
+                            </div>
+                        </div>
+                        <!-- Tekken -->
+                        <div class="card product-card mx-2 shadow-sm">
+                            <div class="card-img-container position-relative">
+                                <img src="../static/image/tekken.jpeg.jpg" class="d-block w-100 rounded" alt="Tekken">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">Tekken</h5>
+                                <p class="text-muted">Top-notch gaming experience</p>
+                                <div class="price">₱259.00</div>
+                                <a href="{{ url_for('shop') }}" class="btn btn-outline-primary mt-2">Shop now</a>
+                            </div>
+                        </div>
+                        <!-- PS5 Final Fantasy XVI -->
+                        <div class="card product-card mx-2 shadow-sm">
+                            <div class="card-img-container position-relative">
+                                <img src="../static/image/final.jpeg.jpg" class="d-block w-100 rounded" alt="PS5 Final Fantasy XVI">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">PS5 Final Fantasy XVI (R3)</h5>
+                                <p class="text-muted">An epic adventure awaits</p>
+                                <div class="price">₱580.00</div>
+                                <a href="{{ url_for('shop') }}" class="btn btn-outline-primary mt-2">Shop now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Carousel Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#bestSellerCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#bestSellerCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+    
+    
+    
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section about">
+                <h2>About Us</h2>
+                <p>Books and Media is your go-to platform for books, magazines, movies, music, and games. Explore new collections and timeless classics.</p>
+            </div>
+            <div class="footer-section links">
+                <h2>Quick Links</h2>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Shop</a></li>
+                    <li><a href="#">Categories</a></li>
+                    <li><a href="#">Help</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section newsletter">
+                <h2>Newsletter</h2>
+                <form>
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+            <div class="footer-section social">
+                <h2>Follow Us</h2>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Books and Media | All Rights Reserved</p>
+        </div>
+    </footer>
+
+</body>
+</html>

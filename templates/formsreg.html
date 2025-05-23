@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #63C5DA;
+            --primary-dark: #4fabbc;
+            --primary-light: #89d3e3;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --white: #ffffff;
+            --gray-light: #f5f7fa;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: auto;
+            padding: 20px 0;
+        }
+        
+        .background-shape {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .shape-1 {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            left: -100px;
+        }
+        
+        .shape-2 {
+            width: 300px;
+            height: 300px;
+            bottom: -50px;
+            right: -50px;
+        }
+        
+        .form-container {
+            display: flex;
+            width: 900px;
+            max-width: 90%;
+            background-color: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            z-index: 10;
+        }
+        
+        .image-side {
+            flex: 1;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .image-side::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://via.placeholder.com/800x1200') center/cover;
+            opacity: 0.15;
+        }
+        
+        .logo-column {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo-column img {
+            max-width: 80%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        
+        .form-side {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .form-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-header h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .form-header p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .input-group {
+            flex: 1;
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .input-field {
+            position: relative;
+        }
+        
+        .input-field input,
+        .input-field select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e1e5eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: var(--gray-light);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .input-field input:focus,
+        .input-field select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 197, 218, 0.2);
+            outline: none;
+            background-color: var(--white);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #e1e5eb;
+        }
+        
+        .divider::before {
+            margin-right: 10px;
+        }
+        
+        .divider::after {
+            margin-left: 10px;
+        }
+        
+        .footer {
+            text-align: center;
+        }
+        
+        .footer p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Custom scrollbar */
+        .form-side::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .form-side::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .form-side::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-container {
+                flex-direction: column;
+                width: 95%;
+            }
+            
+            .image-side {
+                display: none;
+            }
+            
+            .form-side {
+                padding: 30px 20px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+        
+        /* Courier specific fields */
+        #courierFields {
+            border-top: 1px solid #e1e5eb;
+            padding-top: 20px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        #courierFields h3 {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-shape shape-1"></div>
+    <div class="background-shape shape-2"></div>
+    
+    <div class="form-container">
+        <div class="image-side">
+            <div class="logo-column">
+                <img src="../static/image/loglog2.png" alt="Logo">
+            </div>
+        </div>
+        
+        <div class="form-side">
+            <div class="form-header">
+                <h2>Create an Account</h2>
+                <p>Please fill in the information to register</p>
+            </div>
+            
+            <form id="registrationForm" action="{{ url_for('submit_form') }}" method="POST" onsubmit="return validateForm()">
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="firstName">First Name</label>
+                        <div class="input-field">
+                            <input type="text" id="firstName" name="FirstName" placeholder="Enter your first name" required oninput="updateFullName()">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="middleName">Middle Name</label>
+                        <div class="input-field">
+                            <input type="text" id="middleName" name="MiddleName" placeholder="Enter your middle name" oninput="updateFullName()">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="lastName">Last Name</label>
+                    <div class="input-field">
+                        <input type="text" id="lastName" name="LastName" placeholder="Enter your last name" required oninput="updateFullName()">
+                    </div>
+                </div>
+                
+                <input type="hidden" id="name" name="Name">
+                
+                <div class="input-group">
+                    <label for="address">Full Address</label>
+                    <div class="input-field">
+                        <input type="text" id="address" name="PhysicalAddress" placeholder="Enter your full address" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="phone">Phone Number</label>
+                        <div class="input-field">
+                            <input type="tel" id="phone" name="PhoneNumber" placeholder="Enter your phone number" required>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <div class="input-field">
+                            <input type="email" id="email" name="Email" placeholder="Enter your email address" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <div class="input-field">
+                        <input type="password" id="password" name="Password" placeholder="Create a secure password" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="gender">Gender</label>
+                        <div class="input-field">
+                            <select id="gender" name="Gender" required>
+                                <option value="" disabled selected>Select your gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="role">Account Type</label>
+                        <div class="input-field">
+                            <select id="role" name="Role" required onchange="toggleCourierFields()">
+                                <option value="" disabled selected>Select account type</option>
+                                <option value="user">User</option>
+                                <option value="Seller">Seller</option>
+                                <option value="Courier">Courier</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Courier specific fields - shown only when courier option is selected -->
+                <div id="courierFields">
+                    <h3>Courier Information</h3>
+                    
+                    <div class="input-group">
+                        <label for="vehicleType">Vehicle Type</label>
+                        <div class="input-field">
+                            <select id="vehicleType" name="VehicleType">
+                                <option value="" disabled selected>Select your vehicle type</option>
+                                <option value="motorcycle">Motorcycle</option>
+                                <option value="car">Car</option>
+                                <option value="bicycle">Bicycle</option>
+                                <option value="van">Van/Small Truck</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="licensePlate">License Plate Number</label>
+                        <div class="input-field">
+                            <input type="text" id="licensePlate" name="LicensePlate" placeholder="Enter vehicle license plate number">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="idNumber">ID/License Number</label>
+                        <div class="input-field">
+                            <input type="text" id="idNumber" name="IDNumber" placeholder="Enter your ID or driver's license number">
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="serviceArea">Service Area</label>
+                        <div class="input-field">
+                            <input type="text" id="serviceArea" name="ServiceArea" placeholder="Enter your delivery service area">
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">Register Account</button>
+                
+                <div class="divider">or</div>
+                
+                <div class="footer">
+                    <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function updateFullName() {
+            const firstName = document.getElementById("firstName").value;
+            const middleName = document.getElementById("middleName").value;
+            const lastName = document.getElementById("lastName").value;
+    
+            // Combine all names (ignore middle name if empty)
+            const fullName = `${firstName} ${middleName ? middleName + " " : ""}${lastName}`;
+            document.getElementById("name").value = fullName;
+        }
+        
+        function toggleCourierFields() {
+            const role = document.getElementById("role").value;
+            const courierFields = document.getElementById("courierFields");
+            
+            if (role === "Courier") {
+                courierFields.style.display = "block";
+                // Make courier fields required
+                document.getElementById("vehicleType").required = true;
+                document.getElementById("licensePlate").required = true;
+                document.getElementById("idNumber").required = true;
+                document.getElementById("serviceArea").required = true;
+            } else {
+                courierFields.style.display = "none";
+                // Make courier fields not required
+                document.getElementById("vehicleType").required = false;
+                document.getElementById("licensePlate").required = false;
+                document.getElementById("idNumber").required = false;
+                document.getElementById("serviceArea").required = false;
+            }
+        }
+        
+        function validateForm() {
+            const password = document.getElementById("password").value;
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters long.");
+                return false;
+            }
+            
+            const role = document.getElementById("role").value;
+            if (role === "Courier") {
+                const vehicleType = document.getElementById("vehicleType").value;
+                const licensePlate = document.getElementById("licensePlate").value;
+                const idNumber = document.getElementById("idNumber").value;
+                const serviceArea = document.getElementById("serviceArea").value;
+                
+                if (!vehicleType || !licensePlate || !idNumber || !serviceArea) {
+                    alert("Please fill in all courier information fields.");
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+    
+        document.getElementById('registrationForm').onsubmit = function(event) {
+            if (!validateForm()) {
+                event.preventDefault();
+                return false;
+            }
+            
+            event.preventDefault(); // Prevent the default form submission
+    
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: this.method,
+                body: formData
+            })
+            .then(response => {
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return response.json();  // Parse as JSON if content-type is JSON
+                } else {
+                    return response.text();  // Otherwise parse as text (HTML for redirects)
+                }
+            })
+            .then(data => {
+                if (typeof data === 'object' && data.message) {
+                    alert(data.message); // Show success message
+                    window.location.href = "{{ url_for('login_page') }}"; // Redirect to login page
+                } else if (typeof data === 'object' && data.error) {
+                    alert(data.error); // Show error message
+                } else {
+                    // If we received HTML (e.g., a redirect), just load it
+                    document.open();
+                    document.write(data);
+                    document.close();
+                }
+            })
+            .catch(error => {
+                alert('An error occurred: ' + error.message);
+            });
+        };
+        
+        // Initialize the form
+        document.addEventListener('DOMContentLoaded', function() {
+            updateFullName();
+            toggleCourierFields();
+        });
+    </script>
+</body>
+</html>

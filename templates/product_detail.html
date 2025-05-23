@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product[0] }} - Product Details</title>
+    
+    <style>
+        /* Internal CSS styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .product-detail-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 80%; /* Set the width of the product detail container */
+        }
+
+        .product-image-container {
+            flex: 1;
+            margin-right: 20px; /* Space between image and details */
+        }
+
+        .product-image {
+            width: 100%;  /* Makes image fill the container width */
+            height: auto;
+            object-fit: cover;
+            border-radius: 8px; /* Optional: rounded corners */
+        }
+
+        .product-details {
+            flex: 2;  /* Product details take more space */
+            text-align: left;
+        }
+
+        .product-details h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .product-details p {
+            font-size: 18px;
+            color: #666;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        /* Blue color for the price */
+        .product-details .price {
+            color: #007bff;  /* Blue color */
+            font-size: 22px;  /* Slightly larger font size */
+            font-weight: bold;
+        }
+
+        .product-details .buttons-container {
+            display: flex;
+            justify-content: center; /* Center the buttons */
+            gap: 20px; /* Space between buttons */
+        }
+
+        .add-to-cart-btn, .buy-now-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 150px; /* Set a fixed width for both buttons */
+        }
+
+        .add-to-cart-btn {
+            background-color: #28a745; /* Green for Add to Cart */
+        }
+
+        .buy-now-btn {
+            background-color: #007bff; /* Blue for Buy Now */
+        }
+
+        .cart-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <div class="product-detail-container">
+        <!-- Product Image Container -->
+        <div class="product-image-container">
+            <img src="{{ url_for('static', filename='uploads/' + product[7]) }}" alt="{{ product[1] }}" class="product-image">
+        </div>
+
+        <!-- Product Details -->
+        <div class="product-details">
+            <p>{{ product[1] }}</p>  <!-- Product Name -->
+            <p>Category: {{ product[2] }}</p>
+            <p>Description: {{ product[4] }}</p>
+            <p>{{ product[3] }}</p>
+            <p>Available Quantity: {{ product[10] }}</p>
+            <p class="price">Price: ₱{{ product[5] }}</p>  <!-- Product Price -->
+
+            <!-- Buttons Container -->
+            <div class="buttons-container">
+                <button class="add-to-cart-btn" onclick="addToCart('{{ product[0] }}')">Add to Cart</button>
+                <button class="buy-now-btn" onclick="buyNow('{{ product[0] }}', '{{ product[1] }}', '{{ product[5] }}')">Buy Now</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to buy the product immediately
+            function buyNow(productId) {
+        const productName = "{{ product[1] }}";  // Use proper name
+        const productPrice = "{{ product[5] }}";  // Product price
+        const productQuantity = 1;  // Default quantity for Buy Now
+
+        const checkoutUrl = `/checkout?product_id=${productId}&product_name=${encodeURIComponent(productName)}&price=${productPrice}&quantity=${productQuantity}`;
+
+        console.log("Redirecting to:", checkoutUrl);
+        window.location.href = checkoutUrl;  // Redirect to checkout page
+    }
+
+        // Function to add the product to the cart
+        function addToCart(productId) {
+            fetch('/add_to_cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ product_id: productId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Product added to cart successfully!");
+                } else {
+                    alert("Error adding product to cart.");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

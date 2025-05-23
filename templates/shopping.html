@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='shopping.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Navbar -->
+        {% include 'navbar.html' %}
+
+        <!-- Category Filter -->
+        <div class="category-filter">
+            <form method="get" action="{{ url_for('shop') }}">
+                <label for="category">Category:</label>
+                <select name="category" id="category" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat[0] }}" {% if cat[0] == selected_category %}selected{% endif %}>{{ cat[0] }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="product-grid">
+            {% if products %}
+                {% for product in products %}
+                    <div class="product-card">
+                        <a href="{{ url_for('product_detail', product_id=product[0]) }}">
+                            <img src="{{ url_for('static', filename='uploads/' + product[7]) }}" alt="{{ product[1] }}" class="product-image">
+                            <h3>{{ product[1] }}</h3>
+                            <p class="price">₱{{ product[5] }}</p>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No products found in this category.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

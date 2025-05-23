@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #63C5DA;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e0f7fa;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            margin: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 5px;
+            color: white;
+        }
+
+        .btn-save {
+            background-color: #63C5DA;
+        }
+
+        .btn-save:hover {
+            background-color: #63C5DA;
+        }
+
+        .btn-dashboard {
+            background-color: #63C5DA;
+            color: white;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-left: 75px;
+        }
+
+        .btn-dashboard:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #63C5DA;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('sellerdash') }}" class="btn btn-dashboard">Dashboard</a>
+
+    <h1>Inventory Management</h1>
+
+ 
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock Quantity</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.product_name }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.price }}</td>
+                <td>
+                    <input type="number" id="quantity-{{ product.id }}" value="{{ product.stock_quantity }}" min="0" />
+                </td>
+
+                <td>
+                    <button class="btn btn-save" onclick="updateQuantity('{{ product.id }}')">Save</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+    <script>
+    // Function to update product quantity
+    async function updateQuantity(productId) {
+        const newQuantity = document.getElementById(`quantity-${productId}`).value;
+    
+        try {
+            const response = await fetch(`/update_quantity/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ quantity: newQuantity }),
+            });
+    
+            if (response.ok) {
+                alert("Quantity updated successfully!");
+            } else {
+                const errorData = await response.json();
+                alert(`Failed to update quantity: ${errorData.error || "Unknown error"}`);
+            }
+        } catch (error) {
+            console.error("Error updating quantity:", error);
+            alert("An error occurred while processing your request. Please try again later.");
+        }
+    }
+    </script>
+</body>
+</html>

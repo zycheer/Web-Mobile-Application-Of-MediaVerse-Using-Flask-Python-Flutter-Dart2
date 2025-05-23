@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .content {
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    .no-feedback {
+      padding: 20px;
+      text-align: center;
+      font-size: 18px;
+      color: #888;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #eaeaea;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      th, td {
+        font-size: 14px;
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="content" id="feedback">
+  <h2>Feedback</h2>
+
+  <!-- Message if no feedback is available -->
+  <div id="no-feedback-message" class="no-feedback hidden">
+    No feedback available for the products sold by you.
+  </div>
+
+  <!-- Feedback table -->
+  <table id="feedback-table" class="hidden">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Rating</th>
+        <th>Comment</th>
+        <th>Created At</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rows will be dynamically inserted -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Fetch data from the API
+    fetch('/get_feedback')
+      .then(response => response.json())
+      .then(data => {
+        if (data.feedback && data.feedback.length > 0) {
+          populateTable(data.feedback);
+        } else {
+          document.getElementById('no-feedback-message').classList.remove('hidden');
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching feedback:', error);
+        document.getElementById('no-feedback-message').textContent = 'An error occurred while fetching feedback.';
+        document.getElementById('no-feedback-message').classList.remove('hidden');
+      });
+  });
+
+  function populateTable(feedbackData) {
+    const table = document.getElementById('feedback-table');
+    const tbody = table.querySelector('tbody');
+
+    // Clear existing rows (if any)
+    tbody.innerHTML = '';
+
+    feedbackData.forEach(feedback => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${feedback.order_id}</td>
+        <td>${feedback.Name || 'N/A'}</td>
+        <td>${feedback.Email || 'N/A'}</td>
+        <td>${feedback.rating}</td>
+        <td>${feedback.comment || 'No comment'}</td>
+        <td>${new Date(feedback.created_at).toLocaleString()}</td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    // Show the table
+    table.classList.remove('hidden');
+  }
+</script>
+
+</body>
+</html>

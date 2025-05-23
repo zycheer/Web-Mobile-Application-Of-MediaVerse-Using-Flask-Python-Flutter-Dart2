@@ -1,0 +1,19 @@
+<h1>Thank you for your order!</h1>
+<p>Your order has been placed successfully. You will receive an email confirmation shortly.</p>
+
+<table>
+  <tr>
+    <th>Product</th>
+    <th>Quantity</th>
+    <th>Price</th>
+    <th>Total</th>
+  </tr>
+  {% for order in orders %}
+  <tr>
+    <td>{{ order.product_name }}</td>
+    <td>{{ order.stock_quantity }}</td>
+    <td>{{ order.price }}</td>
+    <td>{{ order.total }}</td>
+  </tr>
+  {% endfor %}
+</table>

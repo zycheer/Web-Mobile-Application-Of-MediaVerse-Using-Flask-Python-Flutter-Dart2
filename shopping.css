@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap');
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 90%; /* Adjusted container width to give more room for spacing */
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.breadcrumb {
+    margin-bottom: 20px;
+}
+
+.breadcrumb a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.breadcrumb span {
+    color: #7f8c8d;
+}
+
+
+.item-count {
+    font-size: 14px;
+    color: #7f8c8d;
+}
+
+.sort-by {
+    display: flex;
+    align-items: center;
+}
+
+.sort-by label {
+    margin-right: 10px;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+.sort-by select {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Product Grid */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Adjusted min width to give more spacing */
+    gap: 40px; /* Increased gap between product cards */
+    margin-top: 150px;
+}
+
+.product-card {
+    background-color: #fff;
+    padding: 20px; /* Increased padding for larger spacing inside the card */
+    border: 1px solid #ecf0f1;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+/* Product Card Images */
+.product-card img {
+    max-width: 100%; /* Allow the image to take the full width of its container */
+    max-height: 200px; /* Limit the maximum height */
+    height: auto; 
+    margin-bottom: 15px; /* Added extra space below the image */
+    border-radius: 8px;
+    object-fit: cover; /* Ensures the image covers the area while maintaining aspect ratio */
+}
+
+
+
+.product-card h3 {
+    font-size: 18px; /* Increased font size for product title */
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.product-card .price {
+    font-size: 20px; /* Increased font size for price */
+    color: #e74c3c;
+    margin-bottom: 5px;
+}
+
+.product-card .discount {
+    font-size: 14px;
+    color: #27ae60;
+    margin-bottom: 15px;
+}
+
+/* Product Card Images */
+.product-card img {
+    width: 200px;  /* Fixed width for all product images */
+    height: 200px; /* Fixed height for all product images */
+    margin-bottom: 15px; /* Space below the image */
+    border-radius: 8px;
+    object-fit: cover; /* Ensures the image maintains its aspect ratio while filling the area */
+}
+
+/* Category Filter Styling */
+.category-filter {
+    margin-top: 100px; /* Adjust the top margin to move the filter lower on the page */
+    padding: 20px 0;
+    background-color: #fff; /* Optional: gives it a clean background */
+    border-radius: 8px; /* Optional: rounds the corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: adds a shadow for a more distinct separation */
+}
+
+.category-filter form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.category-filter select {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Styling for the dropdown */
+.category-filter label {
+    font-size: 16px;
+    color: #333;
+}
+
+/* If you want to add more space around the product grid */
+.product-grid {
+    margin-top: 30px; /* Optional: adds spacing between the category filter and the product grid */
+}

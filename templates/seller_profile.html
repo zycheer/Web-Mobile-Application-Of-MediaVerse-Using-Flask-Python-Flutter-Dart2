@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            width: 250px;
+            background-color: #343a40;
+            padding-top: 20px;
+            border-top-right-radius: 20px;  /* Curve the top right corner */
+            border-bottom-right-radius: 20px;  /* Curve the bottom right corner */
+        }
+        .sidebar a {
+            color: #ffffff;
+            padding: 15px;
+            text-decoration: none;
+            display: block;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .content {
+            margin-left: 260px;
+            padding: 20px;
+        }
+        .profile-card {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .profile-card .profile-item {
+            margin-bottom: 15px;
+        }
+        .profile-card .profile-item p {
+            font-size: 1.1rem;
+        }
+        /* Add shadow to the buttons */
+.btn {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Slightly larger shadow on hover */
+}
+
+        
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h4 class="text-center text-light">Media Verse</h4>
+        <hr class="text-light">
+        <a href="{{ url_for('sellerdash') }}">Home</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+    </div>
+
+    <div class="content">
+        <div class="panel text-dark p-3 mb-4" style="background-color: #fff; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+            <h2 class="mb-0">Welcome, {{ userinfo['name'] }}</h2>
+        </div>
+
+        <!-- Flash Messages -->
+        <div class="container mt-3">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="alert alert-dismissible fade show" role="alert">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Profile Information Display -->
+<div class="profile-card bg-white">
+    <h5 class="text-center mb-4" style="font-weight: bold;">Profile Information</h5>
+
+    <div class="row">
+        <div class="col-md-6 profile-item">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ userinfo['name'] }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 profile-item">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p><strong>Email:</strong> {{ userinfo['email'] }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 profile-item">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p><strong>Business Name:</strong> {{ userinfo['business_name'] }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 profile-item">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p><strong>Phone Number:</strong> {{ userinfo['phone_number'] }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 profile-item">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p><strong>Address:</strong> {{ userinfo['physical_address'] }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 profile-item">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p><strong>Gender:</strong> {{ userinfo['gender'] or "Not available" }}</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        
+        <div class="text-center mt-4">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
+            <button class="btn btn-secondary ms-2" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
+        </div>
+    </div>
+    
+
+ <!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editProfileForm" method="POST" action="{{ url_for('update_seller') }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ userinfo['name'] }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="business_name" class="form-label">Business Name</label>
+                        <input type="text" class="form-control" id="business_name" name="business_name" value="{{ userinfo['business_name'] }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ userinfo['email'] }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone_number" class="form-label">Phone Number</label>
+                        <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ userinfo['phone_number'] }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="physical_address" class="form-label">Address</label>
+                        <textarea class="form-control" id="physical_address" name="physical_address" required>"{{ userinfo['physical_address'] }}"</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender</label><br>
+                        <input type="radio" id="male" name="gender" value="male" {% if userinfo['gender'] == 'male' %}checked{% endif %}>
+                        <label for="male">Male</label><br>
+                        <input type="radio" id="female" name="gender" value="female" {% if userinfo['gender'] == 'female' %}checked{% endif %}>
+                        <label for="female">Female</label><br>
+                        <input type="radio" id="others" name="gender" value="others" {% if userinfo['gender'] == 'others' %}checked{% endif %}>
+                        <label for="others">Others</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="changePasswordForm" method="POST" action="{{ url_for('update_password_plain') }}">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="current_password" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="current_password" name="current_password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="new_password" name="new_password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="showPassword">
+                            <label class="form-check-label" for="showPassword">Show Password</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Toggle password visibility
+        document.getElementById('showPassword').addEventListener('change', function() {
+            const currentPassword = document.getElementById('current_password');
+            const newPassword = document.getElementById('new_password');
+            const confirmPassword = document.getElementById('confirm_password');
+            
+            if (this.checked) {
+                currentPassword.type = 'text';
+                newPassword.type = 'text';
+                confirmPassword.type = 'text';
+            } else {
+                currentPassword.type = 'password';
+                newPassword.type = 'password';
+                confirmPassword.type = 'password';
+            }
+        });
+    </script>
+</body>
+</html>

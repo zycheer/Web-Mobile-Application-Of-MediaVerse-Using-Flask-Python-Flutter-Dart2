@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courier Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/courier.css">
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <div class="text-center mb-4">
+                    <h4>Courier Panel</h4>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" data-view="dashboard">
+                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-view="available-orders">
+                            <i class="fas fa-clipboard-list me-2"></i> Available Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-view="my-deliveries">
+                            <i class="fas fa-truck me-2"></i> My Deliveries
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-view="profile">
+                            <i class="fas fa-user me-2"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('logout') }}" class="nav-link">
+                            <i class="fas fa-sign-out-alt me-2"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 content">
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Welcome, {{ session['user']['name'] }}!</h2>
+                    <span class="badge bg-success">Courier</span>
+                </div>
+                
+                <!-- Dashboard View -->
+                <div id="dashboard" class="view-content active">
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Orders Available</h5>
+                                    <h2 class="card-text">{{ available_count }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">In Progress</h5>
+                                    <h2 class="card-text">2</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Completed Today</h5>
+                                    <h2 class="card-text">3</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <h3 class="mb-3">My Current Deliveries</h3>
+                
+                    <div class="card order-card">
+                        <div class="card-header d-flex justify-content-between">
+                            <span>Order #12346</span>
+                            <span class="status-pending">Pending Pickup</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <p><strong>Pickup:</strong> 789 Store Road, City</p>
+                                    <p><strong>Delivery:</strong> 101 Buyer Lane, City</p>
+                                    <p><strong>Items:</strong> 1 package</p>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <p><strong>Pickup Time:</strong> Today, 3:00 PM</p>
+                                    <p><strong>Estimated Delivery:</strong> Today, 5:30 PM</p>
+                                    <button class="btn btn-primary">Start Delivery</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Updated Available Orders View -->
+<div id="available-orders" class="view-content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Available Orders</h3>
+        <div>
+            <input type="text" class="form-control" placeholder="Search orders...">
+        </div>
+    </div>
+    
+    <!-- Hidden input to store courier ID -->
+    <input type="hidden" id="courier-id" value="<?php echo $courier_id; ?>">
+    
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Pickup Location</th>
+                    <th>Delivery Location</th>
+                    <th>Items</th>
+                    <th>Pay Rate</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="available-orders-table-body">
+                <tr>
+                    <td colspan="6" class="text-center">Loading available orders...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Include the JavaScript file -->
+<script src="assets/js/confirmed-orders.js"></script>
+
+                
+<!-- templates/deliveries.html -->
+<div id="my-deliveries" class="view-content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>My Deliveries</h3>
+        <div class="d-flex">
+            <select class="form-select me-2" id="delivery-status-filter">
+                <option value="all">All Deliveries</option>
+                <option value="pending">Pending</option>
+                <option value="in-transit">In Transit</option>
+                <option value="delivered">Delivered</option>
+            </select>
+            <input type="text" class="form-control" id="delivery-search" placeholder="Search...">
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#current">Current ({{ current_deliveries|length }})</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#completed">Completed ({{ completed_deliveries|length }})</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- Current Deliveries Tab -->
+        <div class="tab-pane fade show active" id="current">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Pickup</th>
+                            <th>Delivery</th>
+                            <th>Status</th>
+                            <th>Pickup Time</th>
+                            <th>Est. Delivery</th>
+                            <th>Items</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if current_deliveries %}
+                            {% for delivery in current_deliveries %}
+                            <tr>
+                                <td>#{{ delivery.order_id }}</td>
+                                <td>{{ delivery.pickup_location }}</td>
+                                <td>{{ delivery.delivery_location }}</td>
+                                <td><span class="status-{{ delivery.status|lower|replace(' ', '-') }}">{{ delivery.status }}</span></td>
+                                <td>{{ delivery.pickup_time or 'N/A' }}</td>
+                                <td>{{ delivery.estimated_delivery or 'N/A' }}</td>
+                                <td>{{ delivery.items }}</td>
+                                <td>
+                                    {% if delivery.status == 'Pending Pickup' %}
+                                        <form action="/update_delivery_status/{{ delivery.id }}/In Transit" method="post" style="display:inline;">
+                                            <button type="submit" class="btn btn-sm btn-primary">Start Delivery</button>
+                                        </form>
+                                    {% elif delivery.status == 'In Transit' %}
+                                        <form action="/update_delivery_status/{{ delivery.id }}/Delivered" method="post" style="display:inline;">
+                                            <button type="submit" class="btn btn-sm btn-success">Mark as Delivered</button>
+                                        </form>
+                                    {% endif %}
+                                    <button class="btn btn-sm btn-outline-secondary">View Details</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center">No current deliveries</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Completed Deliveries Tab -->
+        <div class="tab-pane fade" id="completed">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Pickup</th>
+                            <th>Delivery</th>
+                            <th>Status</th>
+                            <th>Delivered At</th>
+                            <th>Items</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if completed_deliveries %}
+                            {% for delivery in completed_deliveries %}
+                            <tr>
+                                <td>#{{ delivery.order_id }}</td>
+                                <td>{{ delivery.pickup_location }}</td>
+                                <td>{{ delivery.delivery_location }}</td>
+                                <td><span class="status-delivered">Delivered</span></td>
+                                <td>{{ delivery.completed_at or 'N/A' }}</td>
+                                <td>{{ delivery.items }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-secondary">View Details</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center">No completed deliveries</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+                
+                <!-- Profile View -->
+                <div id="profile" class="view-content">
+                    <h3 class="mb-4">My Profile</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header">Personal Information</div>
+                                <div class="card-body">
+                                    <form>
+                                        <div class="mb-3">
+                                            <label class="form-label">Full Name</label>
+                                            <input type="text" class="form-control" value="{{ session['user']['name'] }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control" value="courier@example.com" readonly>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Phone Number</label>
+                                            <input type="tel" class="form-control" value="+63 912 345 6789">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Address</label>
+                                            <textarea class="form-control">123 Courier St., City</textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header">Account Settings</div>
+                                <div class="card-body">
+                                    <form>
+                                        <div class="mb-3">
+                                            <label class="form-label">Change Password</label>
+                                            <input type="password" class="form-control" placeholder="Current password">
+                                        </div>
+                                        <div class="mb-3">
+                                            <input type="password" class="form-control" placeholder="New password">
+                                        </div>
+                                        <div class="mb-3">
+                                            <input type="password" class="form-control" placeholder="Confirm new password">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Change Password</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">Delivery Statistics</div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6 mb-3">
+                                            <h6>Total Deliveries</h6>
+                                            <h3>148</h3>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>Rating</h6>
+                                            <h3>4.8 <small class="text-muted">/5</small></h3>
+                                        </div>
+                                        <div class="col-6">
+                                            <h6>On-time Rate</h6>
+                                            <h3>97%</h3>
+                                        </div>
+                                        <div class="col-6">
+                                            <h6>Total Earnings</h6>
+                                            <h3>₱18,540</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation functionality
+            const navLinks = document.querySelectorAll('.nav-link[data-view]');
+            const viewContents = document.querySelectorAll('.view-content');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Update active class on links
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show the correct view
+                    const viewId = this.getAttribute('data-view');
+                    viewContents.forEach(view => view.classList.remove('active'));
+                    document.getElementById(viewId).classList.add('active');
+                });
+            });
+        });
+
+        /// This file handles fetching and accepting confirmed orders
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to fetch confirmed orders
+    function fetchConfirmedOrders() {
+        fetch('/get_confirmed_orders')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayConfirmedOrders(data.orders);
+            })
+            .catch(error => {
+                console.error('Error fetching orders:', error);
+                document.getElementById('available-orders-table-body').innerHTML = 
+                    `<tr><td colspan="6" class="text-center">Failed to load orders. Please try again later.</td></tr>`;
+            });
+    }
+
+    // Function to display confirmed orders in the table
+    function displayConfirmedOrders(orders) {
+        const tableBody = document.getElementById('available-orders-table-body');
+        
+        if (!orders || orders.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="6" class="text-center">No available orders at this time.</td></tr>`;
+            return;
+        }
+        
+        let html = '';
+        orders.forEach(order => {
+            html += `
+                <tr>
+                    <td>#${order.id}</td>
+                    <td>${order.seller_address || 'Store Pickup'}</td>
+                    <td>${order.PhysicalAddress}</td>
+                    <td>${order.quantity_order} x ${order.product_name || 'Item'}</td>
+                    <td>₱${parseFloat(order.total).toFixed(2)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary accept-order-btn" data-order-id="${order.id}">Accept</button>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        tableBody.innerHTML = html;
+        
+        // Add event listeners to the accept buttons
+        document.querySelectorAll('.accept-order-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const orderId = this.getAttribute('data-order-id');
+                acceptOrder(orderId);
+                // Disable the button to prevent multiple clicks
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            });
+        });
+    }
+
+    // Function to handle accepting an order
+    function acceptOrder(orderId) {
+        // Get the courier ID from the hidden field
+        const courierId = document.getElementById('courier-id').value;
+        
+        // If courier ID is not available, try to get it from the session
+        const effectiveCourierId = courierId || getCourierIdFromSession();
+        
+        if (!effectiveCourierId) {
+            alert('Error: Could not determine courier ID. Please refresh the page or log in again.');
+            return;
+        }
+        
+        fetch('/accept_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken() // Include CSRF token if your app uses it
+            },
+            body: JSON.stringify({
+                order_id: orderId,
+                courier_id: effectiveCourierId
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.error || 'Failed to accept order');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Show success message
+            showNotification('success', data.message || 'Order accepted successfully!');
+            
+            // Refresh the orders list
+            fetchConfirmedOrders();
+            
+            // Refresh the current deliveries section if it exists
+            refreshCurrentDeliveries();
+            
+            // Optional: Navigate to the My Deliveries tab
+            const myDeliveriesLink = document.querySelector('.nav-link[data-view="my-deliveries"]');
+            if (myDeliveriesLink) {
+                myDeliveriesLink.click();
+            }
+        })
+        .catch(error => {
+            console.error('Error accepting order:', error);
+            showNotification('danger', error.message || 'Failed to accept order. Please try again.');
+            
+            // Re-enable accept buttons that might have been disabled
+            document.querySelectorAll('.accept-order-btn[disabled]').forEach(btn => {
+                btn.disabled = false;
+                btn.innerHTML = 'Accept';
+            });
+        });
+    }
+    
+    // Helper function to get CSRF token if your app uses it
+    function getCSRFToken() {
+        // Look for CSRF token in meta tag
+        const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+        if (tokenMeta) {
+            return tokenMeta.getAttribute('content');
+        }
+        
+        // Or from a cookie
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const [name, value] = cookie.trim().split('=');
+            if (name === 'csrftoken' || name === '_csrf_token') {
+                return value;
+            }
+        }
+        
+        return null;
+    }
+    
+    // Helper function to get courier ID from session if needed
+    function getCourierIdFromSession() {
+        // This would depend on how your app stores session data
+        // This is just a placeholder
+        return null;
+    }
+    
+    // Function to show notifications
+    function showNotification(type, message) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} alert-dismissible fade show`;
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        // Find a good place to show the notification
+        const container = document.querySelector('.content');
+        if (container) {
+            container.insertBefore(notification, container.firstChild);
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 150);
+            }, 5000);
+        }
+    }
+    
+    // Function to refresh current deliveries
+    function refreshCurrentDeliveries() {
+        // This would depend on how your app handles current deliveries
+        // You might need to implement this based on your app's structure
+        if (typeof fetchActiveOrders === 'function') {
+            fetchActiveOrders();
+        }
+    }
+
+    // Initial fetch of confirmed orders
+    fetchConfirmedOrders();
+    
+    // Set up periodic refresh (every 60 seconds)
+    setInterval(fetchConfirmedOrders, 60000);
+    
+    // Set up search functionality
+    const searchInput = document.querySelector('#available-orders input[type="text"]');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#available-orders-table-body tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+    }
+});
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Notifications</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Order Notifications</h1>
+        <div id="notification-list">
+            {% if notifications %}
+                {% for notification in notifications %}
+                    <div class="notification-card">
+                        <img src="{{ notification.product_image or '/static/default-product.png' }}" 
+                             alt="{{ notification.product_name }}" class="product-image">
+                        <div class="notification-details">
+                            <p><strong>Product:</strong> {{ notification.product_name }}</p>
+                            <p>{{ notification.message }}</p>
+                            <p><small><em>{{ notification.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</em></small></p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No notifications yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .notification-card {
+            display: flex;
+            align-items: center;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+        .notification-card img.product-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+        .notification-details p {
+            margin: 5px 0;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #63C5DA;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e0f7fa;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            margin: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 5px;
+            color: white;
+        }
+
+        .btn-confirm {
+            background-color: #63C5DA;
+        }
+
+        .btn-confirm:hover {
+            background-color: #63C5DA;
+        }
+
+        .btn-disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Button for Dashboard */
+        .btn-dashboard {
+            background-color: #63C5DA;
+            color: white;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-left: 75px;
+        }
+
+        .btn-dashboard:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #63C5DA;
+            color: white;
+        }
+
+        .btn-ship {
+            background-color: #63C5DA; /* Green */
+            color: white;
+        }
+
+        .btn-ship:hover {
+            background-color: #63C5DA;
+        }
+
+        .btn-cancel {
+            background-color: #f44336; /* Red */
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: #d32f2f;
+        }
+
+    </style>
+</head>
+<body>
+
+    
+
+    <a href="{{ url_for('sellerdash') }}" class="btn btn-dashboard">Dashboard</a>
+
+    <h1>Orders Management</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Payment Method</th>
+                <th>Created At</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr id="order-{{ order.id }}">
+                <td>{{ order.id }}</td>
+                <td>{{ order.Name }}</td>
+                <td>{{ order.PhoneNumber }}</td>
+                <td>{{ order.PhysicalAddress }}</td>
+                <td>{{ order.product_name }}</td>
+                <td>{{ order.price }}</td>
+                <td>{{ order.quantity_order }}</td>
+                <td>{{ order.total }}</td>
+                <td>{{ order.payment_method }}</td>
+                <td>{{ order.created_at }}</td>
+                <td id="status-{{ order.id }}">{{ order.status }}</td>
+                <td>
+                    {% if order.status == "Pending" %}
+                        <button class="btn btn-confirm" onclick="confirmOrder('{{ order.id }}')">Confirm Order</button>
+                        <button class="btn btn-cancel" onclick="cancelOrder('{{ order.id }}')">Cancel</button>
+                    {% elif order.status == "Confirmed" %}
+                        <button class="btn btn-ship" onclick="shipOrder('{{ order.id }}')">Ship</button>
+                        <button class="btn btn-cancel" onclick="cancelOrder('{{ order.id }}')">Cancel</button>
+                    {% elif order.status == "Shipped Out" %}
+                        <button class="btn btn-disabled">Shipped Out</button>
+                        <button class="btn btn-cancel" onclick="cancelOrder('{{ order.id }}')">Cancel</button>
+                    {% elif order.status == "Cancelled" %}
+                        <button class="btn btn-disabled">Cancelled</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  
+
+    <script>
+        // Utility function to update the UI
+        function updateOrderUI(orderId, newStatus, actionsHtml) {
+            document.querySelector(`#status-${orderId}`).innerText = newStatus;
+            document.querySelector(`#order-${orderId} td:last-child`).innerHTML = actionsHtml;
+        }
+        
+        // Confirm Order Function
+        async function confirmOrder(orderId) {
+            const confirmButton = document.querySelector(`#order-${orderId} .btn-confirm`);
+            confirmButton.disabled = true;
+        
+            try {
+                const response = await fetch(`/confirm_order/${orderId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.message);
+        
+                    // Update UI to "Confirmed" state
+                    updateOrderUI(orderId, 'Confirmed', `
+                        <button class="btn btn-ship" onclick="shipOrder('${orderId}')">Ship</button>
+                        <button class="btn btn-cancel" onclick="cancelOrder('${orderId}')">Cancel</button>
+                    `);
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.error || "An unknown error occurred.");
+                }
+            } catch (error) {
+                console.error("Error confirming order:", error);
+                alert("An error occurred while confirming the order. Please try again later.");
+            } finally {
+                confirmButton.disabled = false;
+            }
+        }
+        
+        // Ship Order Function
+        async function shipOrder(orderId) {
+            const shipButton = document.querySelector(`#order-${orderId} .btn-ship`);
+            shipButton.disabled = true;
+        
+            try {
+                const response = await fetch(`/ship_order/${orderId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.message);
+        
+                    // Update UI to "Shipped Out" state
+                    updateOrderUI(orderId, 'Shipped Out', `
+                        <button class="btn btn-disabled" disabled>Shipped Out</button>
+                        <button class="btn btn-cancel" onclick="cancelOrder('${orderId}')">Cancel</button>
+                    `);
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.error || "An unknown error occurred.");
+                }
+            } catch (error) {
+                console.error("Error shipping order:", error);
+                alert("An error occurred while shipping the order. Please try again later.");
+            } finally {
+                shipButton.disabled = false;
+            }
+        }
+        
+        // Cancel Order Function
+        async function cancelOrder(orderId) {
+            const cancelButton = document.querySelector(`#order-${orderId} .btn-cancel`);
+            cancelButton.disabled = true;
+        
+            try {
+                const response = await fetch(`/cancel_order/${orderId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+        
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.message);
+        
+                    // Update UI to "Cancelled" state
+                    updateOrderUI(orderId, 'Cancelled', `
+                        <button class="btn btn-disabled" disabled>Cancelled</button>
+                    `);
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.error || "An unknown error occurred.");
+                }
+            } catch (error) {
+                console.error("Error cancelling order:", error);
+                alert("An error occurred while cancelling the order. Please try again later.");
+            } finally {
+                cancelButton.disabled = false;
+            }
+        }
+        </script>
+</body>
+</html>

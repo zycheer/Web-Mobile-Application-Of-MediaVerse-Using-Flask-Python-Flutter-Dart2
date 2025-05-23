@@ -1,0 +1,36 @@
+<form method="POST" action="{{ url_for('add_product') }}" enctype="multipart/form-data">
+    <label for="product_name">Product Name:</label>
+    <input type="text" id="product_name" name="product_name" placeholder="Enter product name" required>
+    
+    <label for="price">Price:</label>
+    <input type="number" id="price" name="price" step="0.01" placeholder="Enter price" required>
+    
+    <label for="category">Category:</label>
+    <input type="text" id="category" name="category" placeholder="Enter category" required>
+    
+    <label for="mini_description">Mini Description:</label>
+    <input type="text" id="mini_description" name="mini_description" placeholder="Enter mini description" required>
+    
+    <label for="main_description">Main Description:</label>
+    <input type="text" id="main_description" name="main_description" placeholder="Enter main description" required>
+    
+    <label for="stock_quantity">Stock Quantity:</label>
+    <input type="number" id="stock_quantity" name="stock_quantity" placeholder="Enter stock quantity" required>
+    
+    <label for="product_image">Product Image:</label>
+    <input type="file" id="product_image" name="product_image" accept="image/*" required>
+    
+    <label for="sub_image_1">Sub Image 1:</label>
+    <input type="file" id="sub_image_1" name="sub_image_1" accept="image/*">
+    
+    <label for="sub_image_2">Sub Image 2:</label>
+    <input type="file" id="sub_image_2" name="sub_image_2" accept="image/*">
+    
+    <label for="sub_image_3">Sub Image 3:</label>
+    <input type="file" id="sub_image_3" name="sub_image_3" accept="image/*">
+    
+    <input type="hidden" name="business_name" value="{{ session['user']['business_name'] }}">
+    <input type="hidden" name="seller_id" value="{{ session['user']['id'] }}">
+    
+    <button type="submit">Add Product</button>
+</form>

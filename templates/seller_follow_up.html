@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Follow-up Requirements</title>
+    <link rel="stylesheet" href="../static/style1.css">
+    <style>
+        .logo {
+            display: block;
+            margin-top: 100px;
+            margin-left: 50px;
+            width: 900px; /* Adjust width as needed */
+        }
+    </style>
+</head>
+<body>
+    <img src="../static/image/loglog2.png" alt="Logo" class="logo">
+    <div class="form-card">
+        <h2>Seller Follow-up Requirements</h2>
+        <form id="sellerForm" action="{{ url_for('seller_follow_up') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateSellerForm()">
+            <label for="businessName">Business Name:</label>
+            <input type="text" id="businessName" name="BusinessName" placeholder="Enter Your Business Name" required>
+            
+        
+            <label for="businessPermit">Upload Business Permit:</label>
+            <input type="file" id="businessPermit" name="BusinessPermit" accept=".pdf,.jpg,.jpeg,.png" required>
+
+            <label for="DTI">Upload DTI Permit:</label>
+            <input type="file" id="DTI" name="DTI" accept=".pdf,.jpg,.jpeg,.png" required>
+
+            <label for="BIR">Upload BIR Permit:</label>
+            <input type="file" id="BIR" name="BIR" accept=".pdf,.jpg,.jpeg,.png" required>
+        
+            <input type="submit" value="Submit">
+        </form>
+        
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('sellerForm').onsubmit = function(event) {
+            event.preventDefault(); // Prevent the default form submission
+    
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: this.method,
+                body: formData
+            })
+            .then(response => {
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    return response.json();  // Parse as JSON if content-type is JSON
+                } else {
+                    return response.text();  // Otherwise parse as text (HTML for redirects)
+                }
+            })
+            .then(data => {
+                if (typeof data === 'object' && data.message) {
+                    alert(data.message); // Show success message
+                    window.location.href = "{{ url_for('seller_follow_up') }}"; // Redirect to seller dashboard
+                } else {
+                    // If we received HTML (e.g., a redirect), just load it
+                    document.open();
+                    document.write(data);
+                    document.close();
+                }
+            })
+            .catch(error => {
+                alert('An error occurred: ' + error.message);
+            });
+        };
+    </script>
+    
+</body>
+</html>

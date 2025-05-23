@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/navbar.css">
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <script src="https://kit.fontawesome.com/0dd07a1078.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- navbar.html -->
+    <nav>
+        <div class="logo">
+            <a href="{{url_for('homepage')}}">
+                <img src="/static/image/loglog2.png" alt="">
+            </a>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <form method="get" action="{{ url_for('shop') }}">
+                <div class="input-container">
+                    <input type="text" name="search" id="search-input" placeholder="Type something...">
+                    <button type="submit" class="search-button">Search</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Cart and Account Section -->
+        <div class="cart-and-account">
+            <div class="cart">
+                <a href="{{ url_for('cart') }}">
+                    <box-icon name='cart-alt'></box-icon>
+                    <span id="cart-count">0</span> <!-- Element to display the cart count -->
+                </a>
+            </div>
+            
+            <div class="account">
+                {% if user_is_logged_in %}
+                <div class="profile">
+                    <i class="fa-regular fa-user"></i> Welcome, {{ username }}
+                    <div class="profile-dropdown">
+                        <a href="/my_account">My Account</a>
+                        <a href="/my-purchase">My Purchases</a>
+                        <a href="/logout">Log Out</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Make an AJAX request to fetch the cart count when the page loads
+        fetch('/cart/count')
+            .then(response => response.json())
+            .then(data => {
+                const cartCountElement = document.getElementById('cart-count');
+                const totalProductsInCart = data.count;
+
+                // Show the cart count if there are items
+                if (totalProductsInCart > 0) {
+                    cartCountElement.innerText = totalProductsInCart;
+                    cartCountElement.classList.add('visible');
+                } else {
+                    cartCountElement.classList.remove('visible');
+                }
+            })
+            .catch(error => console.error('Error fetching cart count:', error));
+    });
+    </script>
+</body>
+</html>

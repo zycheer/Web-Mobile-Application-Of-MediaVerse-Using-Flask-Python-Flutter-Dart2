@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* Reset Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        .checkout-page-container {
+            width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+        .checkout-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+        }
+        .left-section, .right-section {
+            width: 48%;
+        }
+        .shipping-details, .product-table, .payment-method, .order-summary {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        .shipping-info p {
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        .change-btn {
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .product-table table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .product-table th, .product-table td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .product-table th {
+            background-color: #f0f0f0;
+        }
+        .payment-method select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .order-summary p {
+            margin-bottom: 10px;
+        }
+        .place-order-btn {
+            background-color: #28a745;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .place-order-btn:hover {
+            background-color: #218838;
+        }
+        @media (max-width: 768px) {
+            .checkout-container {
+                flex-direction: column;
+            }
+            .left-section, .right-section {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-page-container">
+        <h1>Checkout</h1>
+        <form method="POST" action="/place-order">
+            <div class="checkout-container">
+                <!-- Left Section -->
+                <div class="left-section">
+                    <div class="shipping-details">
+                        <h2><i class="fas fa-map-marker-alt"></i> Shipping Address</h2>
+                        <div class="shipping-info">
+                            {% if user_info %}
+                                <p><strong>{{ user_info.name }} ( {{ user_info.phone }} )</strong></p>
+                                <p>{{ user_info.address }}</p>
+                            {% else %}
+                                <p>No shipping address found. Please update your details.</p>
+                            {% endif %}
+                            <button type="button" class="change-btn" onclick="redirectToProfile()">Change</button>
+                        </div>
+                    </div>
+                    <div class="product-table">
+                        <h2>Product Details</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart_items %}
+                                <tr>
+                                    <td>{{ item['product_name'] }}</td>
+                                    <td>₱{{ item['price'] }}</td>
+                                    <td>{{ item['quantity'] }}</td>
+                                    <td>₱{{ item['total'] }}</td>
+                                </tr>
+                                 <!-- Add hidden inputs for product_id and seller_id -->
+    <input type="hidden" name="product_ids[]" value="{{ item.product_id }}">
+    <input type="hidden" name="seller_ids[]" value="{{ item.seller_id }}">
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right Section -->
+                <div class="right-section">
+                    <div class="payment-method">
+                        <h2>Select Payment Method</h2>
+                        <select name="payment_method" required>
+                            <option value="" disabled selected>Select a Payment Method</option>
+                            <option value="cod">Cash on Delivery</option>
+                            <option value="payment_center">Payment Center / E Wallet</option>
+                            <option value="bank_account">Linked Bank Account</option>
+                            <option value="credit_card">Credit / Debit Card</option>
+                            <option value="online_banking">Online Banking</option>
+                        </select>
+                    </div>
+                    <div class="order-summary">
+                        <h2>Order Summary</h2>
+                        <p><strong>Subtotal:</strong> ₱{{ subtotal }}</p>
+                        <p><strong>Shipping Fee:</strong> ₱{{ shipping_fee }}</p>
+                        <p><strong>Total:</strong> ₱{{ total }}</p>
+                    </div>
+                    <button type="submit" class="place-order-btn">Place Order</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    function redirectToProfile() {
+        window.location.href = '/prof'; // Palitan ang '/profile' ng tamang URL kung iba ang route ng iyong Flask app
+    }
+    </script>
+    
+</html>

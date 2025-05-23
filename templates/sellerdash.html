@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media Verse</title>
+  <!-- Material Symbols Icon Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp" />
+  <!-- Add these to your head section -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Link to External CSS -->
+  <link rel="stylesheet" href="../static/sellerdash.css">
+</head>
+<body>
+    
+  <div class="container">
+    <!-- Sidebar -->
+    <aside>
+      <div class="top">
+        <div class="logo">
+          <img src="../static/imag/logo.png" alt="Logo">
+          <h2><span class="M"></span><span class="1danger">Media Verse</span></h2>
+        </div>
+        <div class="close" id="close_btn">
+          <span class="material-symbols-sharp">close</span>
+        </div>
+      </div>
+      <!-- Sidebar Links -->
+      <div class="sidebar">
+        <a href="#" onclick="openTab('dashboard')" class="active">
+          <span class="material-symbols-sharp">grid_view</span>
+          <h3>Dashboard</h3>
+        </a>
+        <a href="/orders">
+          <span class="material-symbols-sharp">orders</span>
+          <h3>Order Management</h3>
+        </a>
+        <a href="/inventory">
+          <span class="material-symbols-sharp">inventory</span>
+          <h3>Inventory and Sales</h3>
+        </a>
+        
+      
+        <a href="#" onclick="openTab('messages')">
+          <span class="material-symbols-sharp">mail_outline</span>
+          <h3>Messages</h3>
+          <span class="msg_count">9999</span>
+        </a>
+    
+          <!-- Product Dropdown Section -->
+          <a href="#" onclick="openTab('add_product')">
+            <span class="material-symbols-sharp">receipt_long</span>
+            <h3>Add Product</h3>
+
+        <a href="#" onclick="openTab('sales-analytics')">
+        <span class="material-symbols-sharp">analytics</span>
+        <h3>Sales Analytics</h3>
+        </a>
+
+    
+          
+        <a href="#" onclick="confirmLogout(event)">
+          <span class="material-symbols-sharp">logout</span>
+          <h3>Log Out</h3>
+        </a>
+        
+      </div>
+    </aside>
+    
+    <!-- Main Content Area -->
+    <main id="main-content">
+
+    <!-- Add this inside your main content area -->
+<div id="sales-analytics" class="content-section" style="display: none;">
+  <h1>Sales Analytics</h1>
+  <div class="analytics-controls">
+    <select id="date-range" class="analytics-select">
+      <option value="week">Last 7 Days</option>
+      <option value="month">Last 30 Days</option>
+      <option value="quarter">Last 3 Months</option>
+      <option value="year">Last 12 Months</option>
+    </select>
+    
+    <select id="view-select" class="analytics-select">
+      <option value="overview">Overview</option>
+      <option value="products">Product Analysis</option>
+      <option value="orders">Order Analysis</option>
+    </select>
+  </div>
+  
+  <!-- Summary Cards -->
+  <div class="analytics-summary">
+    <div class="summary-card">
+      <h3>Total Sales</h3>
+      <p id="total-sales-amount">₱0</p>
+      <small class="trend positive">+0% from previous period</small>
+    </div>
+    <div class="summary-card">
+      <h3>Total Orders</h3>
+      <p id="total-orders-count">0</p>
+      <small class="trend positive">+0% from previous period</small>
+    </div>
+    <div class="summary-card">
+      <h3>Avg Order Value</h3>
+      <p id="avg-order-value">₱0</p>
+      <small class="trend positive">+0% from previous period</small>
+    </div>
+    <div class="summary-card">
+      <h3>Completion Rate</h3>
+      <p id="completion-rate">0%</p>
+      <small class="trend positive">+0% from previous period</small>
+    </div>
+  </div>
+  
+  <!-- Charts Container -->
+  <div id="charts-container"></div>
+</div>
+      <!-- Dashboard Section -->
+<div id="dashboard" class="content-section">
+    <h1>Dashboard</h1>
+    <div class="date">
+        <input type="date" id="date-filter" onchange="handleDateChange()">
+        <button class="refresh-btn" onclick="refreshAnalytics()">Refresh</button>
+    </div>
+    <div class="insights">
+        <!-- Sales -->
+        <div class="sales">
+            <span class="material-symbols-sharp">trending_up</span>
+            <div class="middle">
+                <div class="left">
+                    <h3>Total Sales</h3>
+                    <h1 id="total-sales">₱0</h1>
+                </div>
+                <div class="progress">
+                    <svg>
+                        <circle r="30" cy="40" cx="40"></circle>
+                    </svg>
+                    <div class="number"><p id="sales-percentage">0%</p></div>
+                </div>
+            </div>
+            <small class="time-indicator">Last 24 Hours</small>
+        </div>
+        <!-- Expenses -->
+        <div class="expenses">
+            <span class="material-symbols-sharp">local_mall</span>
+            <div class="middle">
+                <div class="left">
+                    <h3>Total Expenses</h3>
+                    <h1 id="total-expenses">₱0</h1>
+                </div>
+                <div class="progress">
+                    <svg>
+                        <circle r="30" cy="40" cx="40"></circle>
+                    </svg>
+                    <div class="number"><p id="expenses-percentage">0%</p></div>
+                </div>
+            </div>
+            <small class="time-indicator">Last 24 Hours</small>
+        </div>
+        <!-- Income -->
+        <div class="income">
+            <span class="material-symbols-sharp">stacked_line_chart</span>
+            <div class="middle">
+                <div class="left">
+                    <h3>Total Income</h3>
+                    <h1 id="total-income">₱0</h1>
+                </div>
+                <div class="progress">
+                    <svg>
+                        <circle r="30" cy="40" cx="40"></circle>
+                    </svg>
+                    <div class="number"><p id="income-percentage">0%</p></div>
+                </div>
+            </div>
+            <small class="time-indicator">Last 24 Hours</small>
+        </div>
+    </div>
+    <!-- Recent Orders -->
+    <div class="recent_order">
+        <h2>Recent Orders</h2>
+        <table> 
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Amount</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody id="recent-orders-tbody">
+                <!-- Orders will be populated here -->
+            </tbody>
+        </table>
+        <a href="/orders">Show All</a>
+    </div>
+</div>
+
+<script>
+// Enhanced JavaScript functions for better analytics
+
+function handleDateChange() {
+    const dateInput = document.getElementById('date-filter');
+    const selectedDate = dateInput.value;
+    
+    if (selectedDate) {
+        // Update time indicators
+        document.querySelectorAll('.time-indicator').forEach(el => {
+            el.textContent = `On ${selectedDate}`;
+        });
+        
+        // Fetch analytics for the selected date
+        fetchAnalyticsForDate(selectedDate);
+    } else {
+        // Reset to "Last 24 Hours"
+        document.querySelectorAll('.time-indicator').forEach(el => {
+            el.textContent = 'Last 24 Hours';
+        });
+        
+        // Fetch current analytics
+        updateDashboardAnalytics();
+    }
+}
+
+function refreshAnalytics() {
+    // Add loading state
+    document.querySelectorAll('.insights h1').forEach(el => {
+        el.classList.add('loading');
+    });
+    
+    // Update analytics
+    updateDashboardAnalytics().finally(() => {
+        // Remove loading state
+        document.querySelectorAll('.insights h1').forEach(el => {
+            el.classList.remove('loading');
+        });
+    });
+}
+
+// Enhanced analytics update function
+async function updateDashboardAnalytics() {
+    try {
+        const dateFilter = document.getElementById('date-filter').value;
+        let url = '/get_analytics_data';
+        if (dateFilter) {
+            url += `?date=${dateFilter}`;
+        }
+        
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Failed to fetch analytics');
+        
+        const data = await response.json();
+        
+        // Update total sales
+        document.getElementById('total-sales').textContent = `₱${data.total_sales.toLocaleString()}`;
+        
+        // Update total expenses
+        document.getElementById('total-expenses').textContent = `₱${data.total_expenses.toLocaleString()}`;
+        
+        // Update total income
+        document.getElementById('total-income').textContent = `₱${data.total_income.toLocaleString()}`;
+        
+        // Calculate and update progress percentages
+        // You can adjust these targets based on your business goals
+        const salesTarget = 10000;
+        const expensesTarget = 8000;
+        const incomeTarget = 5000;
+        
+        const salesProgress = Math.min(100, (data.total_sales / salesTarget) * 100);
+        const expensesProgress = Math.min(100, (data.total_expenses / expensesTarget) * 100);
+        const incomeProgress = Math.min(100, (data.total_income / incomeTarget) * 100);
+        
+        // Update progress circles
+        updateProgressCircle('.sales .progress svg circle', salesProgress);
+        updateProgressCircle('.expenses .progress svg circle', expensesProgress);
+        updateProgressCircle('.income .progress svg circle', incomeProgress);
+        
+        // Update percentage displays
+        document.getElementById('sales-percentage').textContent = `${Math.round(salesProgress)}%`;
+        document.getElementById('expenses-percentage').textContent = `${Math.round(expensesProgress)}%`;
+        document.getElementById('income-percentage').textContent = `${Math.round(incomeProgress)}%`;
+        
+        // Update recent orders
+        updateRecentOrders();
+        
+    } catch (error) {
+        console.error('Error updating analytics:', error);
+        // Show error message to user
+        showNotification('Error updating analytics. Please try again.', 'error');
+    }
+}
+
+// Function to show notifications
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    // Style the notification
+    Object.assign(notification.style, {
+        position: 'fixed',
+        top: '20px',
+        right: '20px',
+        padding: '12px 20px',
+        borderRadius: '5px',
+        color: 'white',
+        background: type === 'error' ? '#f44336' : '#2196F3',
+        zIndex: '9999'
+    });
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Enhanced recent orders update
+async function updateRecentOrders() {
+    try {
+        const response = await fetch('/get_recent_orders');
+        if (!response.ok) throw new Error('Failed to fetch recent orders');
+        
+        const orders = await response.json();
+        const tbody = document.getElementById('recent-orders-tbody');
+        
+        tbody.innerHTML = '';
+        
+        orders.slice(0, 4).forEach(order => {
+            const row = document.createElement('tr');
+            
+            // Add status indicator
+            let statusClass = '';
+            if (order.status === 'Completed') statusClass = 'completed';
+            else if (order.status === 'Shipped Out') statusClass = 'shipped';
+            else statusClass = 'pending';
+            
+            row.innerHTML = `
+                <td>${order.product_name}</td>
+                <td>₱${order.total.toFixed(2)}</td>
+                <td>${order.payment_method || 'Paid'}</td>
+                <td class="warning">
+                    <span class="status-indicator ${statusClass}"></span>
+                    ${order.status}
+                </td>
+                <td class="primary"><a href="/order_details/${order.id}">Details</a></td>
+            `;
+            tbody.appendChild(row);
+        });
+        
+        // If no orders
+        if (orders.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="5" style="text-align: center;">No recent orders</td>';
+            tbody.appendChild(row);
+        }
+        
+    } catch (error) {
+        console.error('Error updating recent orders:', error);
+    }
+}
+</script>
+
+<!-- Order Management Section -->
+<div id="order" class="content-section" style="display: none;">
+  <h2>Order Management</h2>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+      <input type="text" id="search-input" placeholder="Search orders" onkeyup="filterOrders()">
+      <button onclick="filterOrders()">Search</button>
+  </div>
+
+
+</div>
+
+
+
+      <!-- Messages Section -->
+      <div id="messages" class="content-section" style="display: none;">
+        <h2>Messages</h2>
+    
+        <div class="message-container">
+            <!-- Admin message example -->
+            <div class="message admin-message">
+                <div class="message-header">
+                    <span class="message-sender">From: Admin</span>
+                    <span class="message-date">Date: Oct 15, 2024</span>
+                </div>
+                <div class="message-body">
+                    <p>If you have any questions, feel free to reach out to our support team!</p>
+                </div>
+            </div>
+    
+            <!-- Customer message example -->
+            <div class="message customer-message">
+                <div class="message-header">
+                    <span class="message-sender">From: Customer</span>
+                    <span class="message-date">Date: Oct 16, 2024</span>
+                </div>
+                <div class="message-body">
+                    <p>I have an issue with my recent order. Can someone help me resolve it?</p>
+                </div>
+            </div>
+    
+          <!-- Additional messages go here -->
+        </div>
+    </div>
+  
+<!-- Add Product Section -->
+<div id="add_product" class="content-section" style="display: none;">
+  <h2>Add Product</h2>
+  <form class="add-product-form" method="POST" action="{{ url_for('add_product') }}" enctype="multipart/form-data">
+
+      <!-- Product Name -->
+      <label for="product_name">Product Name:</label>
+      <input type="text" id="product_name" name="product_name" placeholder="Enter product name" required>
+
+      <!-- Category -->
+      <label for="category">Product Category:</label>
+      <select id="category" name="category" required>
+          <option value="Fiction & Non-Fiction">Fiction & Non-Fiction</option>
+          <option value="Magazine & Periodicals">Magazine & Periodicals</option>
+          <option value="Music CDs & Vinyl Records">Music CDs & Vinyl Records</option>
+          <option value="Movie DVDs & Blu-ray">Movie DVDs & Blu-ray</option>
+          <option value="Video Games & Consoles">Video Games & Consoles</option>
+          <option value="Educational DVDs">Educational DVDs</option>
+      </select>
+
+      <!-- Mini Description -->
+      <label for="mini_description">Mini Description:</label>
+      <textarea id="mini_description" name="mini_description" rows="3" placeholder="Enter short product description" required></textarea>
+
+      <!-- Main Description -->
+      <label for="main_description">Main Description:</label>
+      <textarea id="main_description" name="main_description" rows="5" placeholder="Enter detailed product description" required></textarea>
+
+      <!-- Price -->
+      <label for="price">Product Price:</label>
+      <input type="number" id="price" name="price" placeholder="Enter price" step="0.01" required>
+
+      <!-- Stock Quantity -->
+      <label for="stock_quantity">Stock Quantity:</label>
+      <input type="number" id="stock_quantity" name="stock_quantity" placeholder="Enter stock quantity" required>
+
+      <!-- Product Image -->
+      <label for="product_image">Product Image:</label>
+      <input type="file" id="product_image" name="product_image" accept="image/*" required>
+
+      <!-- Sub Image 1 -->
+      <label for="sub_image_1">Sub Image 1:</label>
+      <input type="file" id="sub_image_1" name="sub_image_1" accept="image/*">
+
+      <!-- Sub Image 2 -->
+      <label for="sub_image_2">Sub Image 2:</label>
+      <input type="file" id="sub_image_2" name="sub_image_2" accept="image/*">
+
+      <!-- Sub Image 3 -->
+      <label for="sub_image_3">Sub Image 3:</label>
+      <input type="file" id="sub_image_3" name="sub_image_3" accept="image/*">
+
+      <!-- Hidden Fields -->
+      <input type="hidden" name="business_name" value="{{ session['user']['business_name'] }}">
+      <input type="hidden" name="seller_id" value="{{ session['user']['id'] }}">
+
+      <!-- Submit Button -->
+      <button type="submit">Add Product</button>
+  </form>
+</div>
+
+
+ <!-- Inventory Section -->
+ <div id="inventory" class="content-section" style="display: none;">
+
+  <div class="btn-group mb-4" role="group" aria-label="Product Status Filter">
+    <button type="button" class="btn btn-secondary" id="listed-tab" onclick="filterProducts('listed')">Listed</button>
+    <button type="button" class="btn btn-secondary" id="unlisted-tab" onclick="filterProducts('unlisted')">Unlisted</button>
+</div>
+
+<!-- Search Input and Dropdown -->
+<form method="GET" action="{{ url_for('my_products') }}">
+    <div class="input-group mb-4">
+        <input type="text" class="form-control" name="search_query" placeholder="Search products..." aria-label="Search" value="{{ search_query }}">
+        <button class="btn-primary" type="submit">Search</button>
+
+        <select class="form-select" aria-label="Select category" name="selected_category">
+              <option value="all" {% if selected_category == 'all' %}selected{% endif %}>All Categories</option>
+              <option value="fiction&nonfiction" {% if selected_category == 'fiction&nonfiction' %}selected{% endif %}>Fiction & Non-Fiction</option>
+              <option value="magazine&periodicals" {% if selected_category == 'magazine&periodicals' %}selected{% endif %}>Magazine & Periodicals</option>
+              <option value="musiccds&vinylrecords" {% if selected_category == 'musiccds&vinylrecords' %}selected{% endif %}>Music Cds & VInyl Records </option>
+              <option value="moviedvds&blu-ray" {% if selected_category == 'moviedvds&blu-ray' %}selected{% endif %}>Movie Dvd & Blu-ray</option>
+              <option value="videogame&console" {% if selected_category == 'videogame&console' %}selected{% endif %}>Video Games & Consoles</option>
+              <option value="educationalsdvd" {% if selected_category == 'educationalsdvd' %}selected{% endif %}>Educationals Dvd</option>
+          </select>
+
+        <!-- Hidden input to track the currently active tab -->
+        <input type="hidden" name="product_status" id="product_status" value="listed">
+    </div>
+</form>
+
+<div class="my_products_content">
+  <!-- Listed Products Section -->
+  <div id="listed-products" style="display: block;">
+      <table class="table table-bordered mt-4">
+          <thead>
+              <tr>
+                  <th>Product Image</th>
+                  <th>Product Name</th>
+                  <th>Price</th>
+                  <th>Stock Quantity</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for product in listed_products %}
+              <tr class="{% if product[6] < 15 %}low-stock-row{% endif %}">
+                  <td>
+                    <img src="{{ url_for('static', filename='upload_images/' + product[7]) }}" alt="{{ product[1] }}" style="max-width: 100px;">
+                  </td>
+                  <td>{{ product[1] }}</td>
+                  <td>{{ product[5] }}</td>
+                  <td>{{ product[6] }}</td>
+                  <td style="color: rgb(36, 243, 8);">{{ product[12] }}</td>
+                  <td>
+                      <div style="display: flex; gap: 10px; align-items: center;">
+                          <li>
+                              <a href="{{ url_for('edit_product', product_id=product[0]) }}" 
+                                 onclick="openTab('editProductForm')" 
+                                 class="{% if active_tab == 'editProductForm' %}active{% endif %}">
+                                  <i class="fas fa-edit"></i>
+                              </a>
+                          </li>
+                          
+                          <form action="{{ url_for('unlist_product', product_id=product[0]) }}" method="POST" style="display:inline;">
+                              <button type="submit" class="unlist-button" title="Unlist" onclick="return confirm('Are you sure you want to unlist this product?');">
+                                  <i class="fas fa-eye-slash"></i>
+                              </button>
+                          </form>
+
+                          
+                      </div>
+                  </td>
+              </tr>
+              {% endfor %}
+              {% if listed_products|length == 0 %}
+              <tr>
+                  <td colspan="6" class="text-center">No listed products found.</td>
+              </tr>
+              {% endif %}
+          </tbody>                        
+      </table>
+  </div>
+
+<!-- Unlisted Products Section -->
+                <div id="unlisted-products" style="display: none;">
+                  <table class="table table-bordered mt-4">
+                      <thead>
+                          <tr>
+                              <th>Product Image</th>
+                              <th>Product Name</th>
+                              <th>Price</th>
+                              <th>Stock Quantity</th>
+                              <th>Status</th>
+                              <th>Actions</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for product in unlisted_products %}
+                          <tr>
+                              <td>
+                                  <img src="{{ url_for('static', filename='upload_images/' + product[7]) }}" 
+                                       alt="{{ product[1] }}" style="max-width: 100px;">
+                              </td>
+                              <td>{{ product[1] }}</td>
+                              <td>{{ product[5] }}</td>
+                              <td>{{ product[6] }}</td>
+                              <td style="color: red;">{{ product[12] }}</td>
+                              <td>
+                                  <!-- Action Buttons -->
+                                  <form action="{{ url_for('move_back_to_listed', product_id=product[0]) }}" method="POST">
+                                      <button type="submit" title="Relist">Relist</button>
+                                  </form>
+                              </td>
+                          </tr>
+                          {% endfor %}
+                          {% if unlisted_products|length == 0 %}
+                          <tr>
+                              <td colspan="6" class="text-center">No unlisted products found.</td>
+                          </tr>
+                          {% endif %}
+                      </tbody>
+                  </table>
+              </div>
+              
+
+
+
+
+    </main>
+
+    <!-- Right Sidebar -->
+    <div class="right">
+      <div class="top">
+        <button id="menu_bar">
+          <span class="material-symbols-sharp">menu</span>
+        </button>
+        <div class="theme-toggler">
+          <span class="material-symbols-sharp active">light_mode</span>
+          <span class="material-symbols-sharp">dark_mode</span>
+        </div>
+        <div class="profile">
+          <a href="{{ url_for('seller_profile') }}" style="text-decoration: none; color: inherit;">
+            <div class="info">
+                <p><b>{{ session.user.name if session.user else 'Seller' }}</b></p>
+                <p>Seller's Account</p>
+            </div>
+          </a>
+          
+          <div class="profile-photo">
+            <img src="../static/imag/default.png" alt="Profile Photo"/>
+          </div>
+        </div>
+      </div>
+      
+
+
+  <script>
+        function fetchToReceiveOrders() {
+            fetch('/to-receive-orders')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('to-receive-orders-body');
+                    tableBody.innerHTML = '';
+
+                    if (data.to_receive_orders && data.to_receive_orders.length > 0) {
+                        data.to_receive_orders.forEach(order => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${order.id}</td>
+                                <td><img src="${order.product_image}" alt="${order.productName}" width="50"></td>
+                                <td>${order.productName}</td>
+                                <td>${order.username}</td>
+                                <td>${order.quantity}</td>
+                                <td>$${order.total}</td>
+                                <td>${order.payment_method}</td>
+                                <td>${order.status}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        tableBody.innerHTML = `<tr><td colspan="8">No orders to receive</td></tr>`;
+                    }
+                })
+                .catch(error => console.error('Error fetching To Receive orders:', error));
+        }
+        // Fetch To Receive Orders initially
+        fetchToReceiveOrders();
+
+        // Optional: Set an interval to refresh Cancelled Orders every 5 minutes
+        setInterval(() => {
+            fetchToReceiveOrders();
+        }, 5000); // Refresh every 5 minutes
+
+    </script>
+
+<!-- // FOR DISPLAYING COMPLETED ORDERS TABLE -->
+    <script>
+        function fetchCompletedOrders() {
+            fetch('/completed-orders')  // Adjust this endpoint based on your route
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('completed-orders-body');
+                    tableBody.innerHTML = '';
+
+                    if (data.completed_orders && data.completed_orders.length > 0) {
+                        data.completed_orders.forEach(order => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${order.id}</td>
+                                <td><img src="${order.product_image}" alt="${order.productName}" width="50"></td>
+                                <td>${order.productName}</td>
+                                <td>${order.username}</td>
+                                <td>${order.quantity}</td>
+                                <td>$${order.total}</td>
+                                <td>${order.payment_method}</td>
+                                <td>${order.status}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        tableBody.innerHTML = `<tr><td colspan="8">No completed orders available.</td></tr>`;
+                    }
+                })
+                .catch(error => console.error('Error fetching completed orders:', error));
+        }
+
+        // Fetch completed orders initially
+        fetchCompletedOrders();
+    </script>
+
+
+<!-- // FOR DISPLAYING CANCELLED ORDERS TABLE -->
+    <script>
+        function fetchCancelledOrders() {
+            fetch('/cancelled-orders')  // Adjust this endpoint based on your route
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('cancelled-orders-body');
+                    tableBody.innerHTML = '';
+
+                    if (data.cancelled_orders && data.cancelled_orders.length > 0) {
+                        data.cancelled_orders.forEach(order => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${order.id}</td>
+                                <td><img src="${order.product_image}" alt="${order.productName}" width="50"></td>
+                                <td>${order.productName}</td>
+                                <td>${order.username}</td>
+                                <td>${order.quantity}</td>
+                                <td>$${order.total}</td>
+                                <td>${order.payment_method}</td>
+                                <td>${order.status}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        tableBody.innerHTML = `<tr><td colspan="8">No cancelled orders available.</td></tr>`;
+                    }
+                })
+                .catch(error => console.error('Error fetching cancelled orders:', error));
+        }
+
+        // Fetch cancelled orders initially
+        fetchCancelledOrders();
+
+        // Optional: Set an interval to refresh Cancelled Orders every 5 minutes
+        setInterval(() => {
+            fetchCancelledOrders();
+        }, 300000); // Refresh every 5 minutes
+
+    </script>
+
+
+
+
+    <script>
+        // Sales Analytics functionality
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize analytics when the page loads
+  if (document.getElementById('sales-analytics')) {
+    initializeSalesAnalytics();
+  }
+});
+
+function initializeSalesAnalytics() {
+  // Set up event listeners
+  document.getElementById('date-range').addEventListener('change', updateAnalytics);
+  document.getElementById('view-select').addEventListener('change', updateAnalyticsView);
+  
+  // Load initial data
+  updateAnalytics();
+}
+
+async function updateAnalytics() {
+  const dateRange = document.getElementById('date-range').value;
+  
+  try {
+    // Show loading state
+    document.getElementById('charts-container').innerHTML = '<p>Loading data...</p>';
+    
+    // Fetch data from your backend
+    const response = await fetch(`/get_sales_analytics?range=${dateRange}`);
+    if (!response.ok) throw new Error('Failed to fetch analytics data');
+    
+    const data = await response.json();
+    
+    // Update summary cards
+    updateSummaryCards(data.summary);
+    
+    // Update charts based on current view
+    updateAnalyticsView();
+    
+  } catch (error) {
+    console.error('Error updating analytics:', error);
+    document.getElementById('charts-container').innerHTML = 
+      '<p class="error">Error loading analytics data. Please try again.</p>';
+  }
+}
+
+function updateSummaryCards(summary) {
+  document.getElementById('total-sales-amount').textContent = `₱${summary.totalSales.toLocaleString()}`;
+  document.getElementById('total-orders-count').textContent = summary.totalOrders;
+  document.getElementById('avg-order-value').textContent = `₱${summary.averageOrderValue.toFixed(2)}`;
+  document.getElementById('completion-rate').textContent = `${summary.completionRate}%`;
+}
+
+function updateAnalyticsView() {
+  const view = document.getElementById('view-select').value;
+  const container = document.getElementById('charts-container');
+  
+  // In a real implementation, you would fetch fresh data for the selected view
+  // For this example, we'll use mock data
+  const mockData = generateMockData();
+  
+  switch(view) {
+    case 'overview':
+      renderOverviewCharts(mockData, container);
+      break;
+    case 'products':
+      renderProductAnalysis(mockData, container);
+      break;
+    case 'orders':
+      renderOrderAnalysis(mockData, container);
+      break;
+    default:
+      container.innerHTML = '<p>Select a view to display analytics</p>';
+  }
+}
+
+function generateMockData() {
+  // This would be replaced with actual data from your backend
+  return {
+    ordersByStatus: [
+      { name: 'Completed', value: 7 },
+      { name: 'Pending', value: 8 },
+      { name: 'Confirmed', value: 5 },
+      { name: 'Shipped Out', value: 3 },
+      { name: 'Cancelled', value: 3 }
+    ],
+    salesByMonth: [
+      { name: 'Dec 2024', sales: 1280 },
+      { name: 'Jan 2025', sales: 2390 },
+      { name: 'Feb 2025', sales: 3490 },
+      { name: 'Mar 2025', sales: 3000 },
+      { name: 'Apr 2025', sales: 2800 },
+      { name: 'May 2025', sales: 3300 }
+    ],
+    productPerformance: [
+      { name: 'Phonics', sales: 720, orders: 6 },
+      { name: 'The Contenders', sales: 477, orders: 3 },
+      { name: 'Tekken', sales: 1295, orders: 5 },
+      { name: 'Final Fantasy XVI', sales: 1740, orders: 3 },
+      { name: 'Time Magazine', sales: 2998, orders: 3 }
+    ],
+    recentOrders: [
+      { id: 160, product: 'Tomes Jones Vinyls CD', amount: 235, status: 'Shipped Out', date: '2025-05-18' },
+      { id: 159, product: 'The Contenders', amount: 159, status: 'Shipped Out', date: '2025-05-18' },
+      { id: 157, product: 'PS5 Final Fantasy XVI (R3)', amount: 580, status: 'Confirmed', date: '2025-05-18' },
+      { id: 154, product: 'Tekken', amount: 259, status: 'Completed', date: '2025-05-18' }
+    ],
+    summary: {
+      totalSales: 11580,
+      totalOrders: 25,
+      averageOrderValue: 463.20,
+      completionRate: 68
+    }
+  };
+}
+
+function renderOverviewCharts(data, container) {
+  container.innerHTML = `
+    <div class="chart-row">
+      <div class="chart-container">
+        <h3 class="chart-title">Sales Over Time</h3>
+        <div id="sales-over-time-chart" style="height: 300px;"></div>
+      </div>
+      <div class="chart-container">
+        <h3 class="chart-title">Orders by Status</h3>
+        <div id="orders-by-status-chart" style="height: 300px;"></div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-container">
+        <h3 class="chart-title">Recent Orders</h3>
+        <div id="recent-orders-table"></div>
+      </div>
+      <div class="chart-container">
+        <h3 class="chart-title">Top Products</h3>
+        <div id="top-products-chart" style="height: 300px;"></div>
+      </div>
+    </div>
+  `;
+  
+  // In a real implementation, you would render charts here using a library like Chart.js
+  // For this example, we'll just display the data in tables
+  
+  document.getElementById('recent-orders-table').innerHTML = `
+    <table class="analytics-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Product</th>
+          <th>Amount</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data.recentOrders.map(order => `
+          <tr>
+            <td>${order.id}</td>
+            <td>${order.product}</td>
+            <td>₱${order.amount}</td>
+            <td>
+              <span class="status-badge status-${order.status.toLowerCase().replace(' ', '-')}">
+                ${order.status}
+              </span>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  
+  // Similarly, you would implement the other charts using a library like Chart.js
+  // For now, we'll just show the data in a simple format
+  document.getElementById('sales-over-time-chart').innerHTML = `
+    <table class="analytics-table">
+      <thead>
+        <tr>
+          <th>Period</th>
+          <th>Sales</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data.salesByMonth.map(item => `
+          <tr>
+            <td>${item.name}</td>
+            <td>₱${item.sales}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  
+  document.getElementById('orders-by-status-chart').innerHTML = `
+    <table class="analytics-table">
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Count</th>
+          <th>Percentage</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data.ordersByStatus.map(item => `
+          <tr>
+            <td>${item.name}</td>
+            <td>${item.value}</td>
+            <td>${Math.round((item.value / data.summary.totalOrders) * 100)}%</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  
+  document.getElementById('top-products-chart').innerHTML = `
+    <table class="analytics-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Sales</th>
+          <th>Orders</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data.productPerformance.map(item => `
+          <tr>
+            <td>${item.name}</td>
+            <td>₱${item.sales}</td>
+            <td>${item.orders}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderProductAnalysis(data, container) {
+  container.innerHTML = `
+    <div class="chart-container">
+      <h3 class="chart-title">Product Performance</h3>
+      <table class="analytics-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Orders</th>
+            <th>Total Sales</th>
+            <th>Avg. Price</th>
+            <th>Performance</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data.productPerformance.map(product => `
+            <tr>
+              <td>${product.name}</td>
+              <td>${product.orders}</td>
+              <td>₱${product.sales}</td>
+              <td>₱${(product.sales / product.orders).toFixed(2)}</td>
+              <td>
+                <div class="progress-bar-container">
+                  <div class="progress-bar" style="width: ${(product.sales / data.productPerformance[0].sales) * 100}%"></div>
+                </div>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderOrderAnalysis(data, container) {
+  container.innerHTML = `
+    <div class="chart-container">
+      <h3 class="chart-title">Order Status Analysis</h3>
+      <div class="order-status-grid">
+        <div class="order-status-chart">
+          <div id="order-status-pie-chart" style="height: 300px;"></div>
+        </div>
+        <div class="order-status-details">
+          <h4>Order Status Distribution</h4>
+          <ul class="status-list">
+            ${data.ordersByStatus.map(status => `
+              <li>
+                <span class="status-color" style="background-color: ${getStatusColor(status.name)}"></span>
+                <span class="status-name">${status.name}</span>
+                <span class="status-count">${status.value} (${Math.round((status.value / data.summary.totalOrders) * 100)}%)</span>
+              </li>
+            `).join('')}
+          </ul>
+          <div class="status-insights">
+            <h4>Key Insights</h4>
+            <ul>
+              <li>Your completion rate is ${data.summary.completionRate}%, which is above industry average</li>
+              <li>Cancellation rate is ${Math.round((data.ordersByStatus.find(s => s.name === 'Cancelled')?.value || 0) / data.summary.totalOrders * 100)}%</li>
+              <li>Focus on converting ${data.ordersByStatus.find(s => s.name === 'Pending')?.value || 0} pending orders</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function getStatusColor(statusName) {
+  const statusColors = {
+    'Completed': '#28a745',
+    'Pending': '#ffc107',
+    'Confirmed': '#007bff',
+    'Shipped Out': '#17a2b8',
+    'Cancelled': '#dc3545',
+    'To Pay': '#fd7e14'
+  };
+  return statusColors[statusName] || '#6c757d';
+}
+
+        function previewEditImage(input, previewImageId) {
+            const file = input.files[0];
+            const previewImage = document.getElementById(previewImageId);
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block'; // Ensure the image is displayed
+                    document.getElementById('editPlaceholderText').style.display = 'none'; // Hide the placeholder text if applicable
+                }
+                reader.readAsDataURL(file);
+            } else {
+                previewImage.src = ''; // Clear the image if no file is selected
+                document.getElementById('editPlaceholderText').style.display = 'block'; // Show placeholder text if no image
+            }
+        }
+    </script>
+
+    
+
+    <script>
+     document.addEventListener("DOMContentLoaded", function () {
+    // G et the active tab from the template
+    var activeTab = "{{ active_tab }}";
+
+    // Open the correct tab
+    if (activeTab) {
+        openTab(activeTab, document.querySelector('a[onclick*="' + activeTab + '"]').innerText);
+    } else {
+        openTab('dashboard', 'Dashboard'); // Default tab
+    }
+});
+
+function openTab(tabName, tabDisplayName, event) {
+    if (event) {
+        event.preventDefault(); // Prevent default anchor behavior
+    }
+
+    var content = document.getElementsByClassName("content");
+    for (var i = 0; i < content.length; i++) {
+        content[i].style.display = 'none'; // Hide all content
+    }
+    
+    document.getElementById(tabName).style.display = 'block'; // Show selected content
+    
+    // Update the current tab display name
+    document.getElementById('current-tab').innerText = tabDisplayName; // Change navbar text
+}
+
+function toggleSubMenu(submenuId) {
+    var submenu = document.getElementById(submenuId);
+    submenu.classList.toggle('open'); // Toggle submenu visibility
+}
+
+const menuLinks = document.querySelectorAll('.menu li a');
+
+// Add click event to each menu link
+menuLinks.forEach(link => {
+    link.addEventListener('click', function() {
+        // Remove active class from all links
+        menuLinks.forEach(link => link.classList.remove('active'));
+        
+        // Add active class to the clicked link
+        this.classList.add('active');
+    });
+});
+
+// Function to clear form fields
+function clearForm() {
+    const form = document.getElementById('addProductForm');
+    if (form) {
+        form.reset(); // Reset form fields
+        const previewImage = document.getElementById('previewImage');
+        const placeholderText = document.getElementById('placeholderText');
+        if (previewImage) {
+            previewImage.src = ''; // Clear image preview
+        }
+        if (placeholderText) {
+            placeholderText.style.display = 'block'; // Show placeholder text
+        }
+    }
+}
+
+// Handle main product image upload
+document.getElementById('productImage').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const previewImage = document.getElementById('previewImage');
+    const placeholderText = document.getElementById('placeholderText');
+
+    if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            previewImage.src = e.target.result; // Set the src of the image preview
+            previewImage.style.display = 'block'; // Show the image
+            placeholderText.style.display = 'none'; // Hide the placeholder text
+        };
+
+        reader.readAsDataURL(file); // Read the image file
+    } else {
+        // If no file is selected, show the placeholder
+        previewImage.style.display = 'none'; // Hide the image
+        placeholderText.style.display = 'block'; // Show the placeholder text
+    }
+});
+
+// Handle sub-image uploads
+for (let i = 1; i <= 3; i++) {
+    document.getElementById(`subImage${i}`).addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const subImagePreview = document.getElementById(`subImagePreview${i}`);
+        const subPlaceholderText = document.getElementById(`subPlaceholderText${i}`);
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                subImagePreview.src = e.target.result; // Set the src of the sub-image preview
+                subImagePreview.style.display = 'block'; // Show the sub-image
+                subPlaceholderText.style.display = 'none'; // Hide the placeholder text
+            };
+
+            reader.readAsDataURL(file); // Read the image file
+        } else {
+            // If no file is selected, show the placeholder
+            subImagePreview.style.display = 'none'; // Hide the sub-image
+            subPlaceholderText.style.display = 'block'; // Show the placeholder text
+        }
+    });
+}
+
+function filterProducts(type) {
+    document.getElementById('listed-products').style.display = type === 'listed' ? 'block' : 'none';
+    document.getElementById('unlisted-products').style.display = type === 'unlisted' ? 'block' : 'none';
+}
+
+// Function to switch between listed and unlisted products
+function filterProducts(status) {
+        document.getElementById('product_status').value = status;
+        if (status === 'listed') {
+            document.getElementById('listed-products').style.display = 'block';
+            document.getElementById('unlisted-products').style.display = 'none';
+        } else if (status === 'unlisted') {
+            document.getElementById('listed-products').style.display = 'none';
+            document.getElementById('unlisted-products').style.display = 'block';
+        }
+    }
+
+    // Set the default filter to 'listed'
+    document.addEventListener('DOMContentLoaded', function () {
+        filterProducts('listed');  // Default to listed products on page load
+    });
+    document.getElementById('addProductForm').addEventListener('submit', function () {
+    alert('Form is being submitted');
+});
+function sortTable(columnIndex) {
+      const table = document.getElementById("order-grid");
+      const rows = Array.from(table.rows).slice(1); // Exclude header
+      const isAscending = table.dataset.sortOrder === "asc";
+
+      rows.sort((row1, row2) => {
+          const cell1 = row1.cells[columnIndex].textContent.trim();
+          const cell2 = row2.cells[columnIndex].textContent.trim();
+
+          return isAscending
+              ? cell1.localeCompare(cell2, undefined, { numeric: true })
+              : cell2.localeCompare(cell1, undefined, { numeric: true });
+      });
+
+      // Re-append sorted rows
+      const tbody = table.tBodies[0];
+      rows.forEach(row => tbody.appendChild(row));
+
+      // Toggle sort order
+      table.dataset.sortOrder = isAscending ? "desc" : "asc";
+  }
+
+  function filterOrders() {
+      const query = document.getElementById("search-input").value.toLowerCase();
+      const rows = document.querySelectorAll("#order-table-body tr");
+
+      rows.forEach(row => {
+          const rowText = row.textContent.toLowerCase();
+          row.style.display = rowText.includes(query) ? "" : "none";
+      });
+  }
+
+
+</script>
+
+  <!-- Link to External JavaScript -->
+  <script src="../static/script.js"></script>
+</body>
+</html>

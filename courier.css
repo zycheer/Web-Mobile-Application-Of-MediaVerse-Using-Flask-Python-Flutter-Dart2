@@ -1,0 +1,60 @@
+.sidebar {
+            background-color: #343a40;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        .sidebar a {
+            color: #ced4da;
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+            color: #fff;
+        }
+        .sidebar .active {
+            background-color: #212529;
+            color: #fff;
+        }
+        .content {
+            padding: 20px;
+        }
+        .order-card {
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .status-pending {
+            background-color: #ffc107;
+            color: #212529;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .status-in-transit {
+            background-color: #17a2b8;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .status-delivered {
+            background-color: #28a745;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .view-content {
+            display: none;
+        }
+        .view-content.active {
+            display: block;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .table th {
+            background-color: #343a40;
+            color: white;
+        }
+
+        

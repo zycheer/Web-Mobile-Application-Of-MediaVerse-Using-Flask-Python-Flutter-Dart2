@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* General Styles */
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    .chat-container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 30%;
+      background-color: #fff;
+      border-right: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .search-bar {
+      padding: 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 25px;
+      border: 1px solid #ddd;
+      outline: none;
+    }
+
+    .chat-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    .chat-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .chat-item.active {
+      background-color: #f0f8ff;
+    }
+
+    .chat-item:hover {
+      background-color: #f9f9f9;
+    }
+
+    .profile-pic {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 1rem;
+    }
+
+    .chat-details {
+      flex-grow: 1;
+    }
+
+    .chat-details h4 {
+      margin: 0;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .chat-details p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: #555;
+    }
+
+    .timestamp {
+      font-size: 0.75rem;
+      color: #888;
+    }
+
+    /* Chat Area */
+    .chat-area {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: #eef1f7;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      background-color: #fff;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .header-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    .chat-header h4 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .status {
+      font-size: 0.875rem;
+      color: #4caf50;
+    }
+
+    .chat-options i {
+      margin-left: 1rem;
+      font-size: 1.25rem;
+      color: #888;
+    }
+
+    .chat-messages {
+      flex-grow: 1;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+
+    .message {
+      margin-bottom: 1rem;
+    }
+
+    .message-header {
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    }
+
+    .message-body {
+        margin-top: 5px;
+        padding: 5px 0;
+    }
+
+    .sent .message-body {
+        background-color: #e0f7fa;  /* Light blue background for sent messages */
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+    .message p {
+      margin: 0;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    .message.sent p {
+      background-color: #ff6464;
+      color: #fff;
+      align-self: flex-end;
+    }
+
+    .message.received p {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+    .time {
+      font-size: 0.75rem;
+      color: #888;
+      margin-top: 0.25rem;
+    }
+
+    .chat-input {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      background-color: #fff;
+      border-top: 1px solid #ddd;
+    }
+
+    .chat-input input {
+      flex-grow: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 25px;
+      outline: none;
+    }
+
+    .input-options i {
+      margin-left: 1rem;
+      font-size: 1.25rem;
+      color: #888;
+      cursor: pointer;
+    }
+
+    /* New styles for product details section */
+    .product-details {
+      padding: 1rem;
+      background-color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    .product-details img {
+      width: 100px;
+      height: 100px;
+      margin-right: 1rem;
+    }
+
+    .product-details h4 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .product-details p {
+      font-size: 0.875rem;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+    <div class="chat-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="search-bar">
+                <input type="text" placeholder="Search">
+            </div>
+            <ul class="chat-list" id="chat-list">
+                <!-- Dynamic sellers will be added here -->
+            </ul>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-area">
+            <div class="chat-header">
+                <img src="user1.jpg" alt="User" class="header-pic">
+                <h4 class="chat-header" id="business-name"></h4>
+                <span class="status">Online now</span>
+                <div class="chat-options">
+                    <i class="fas fa-phone"></i>
+                    <i class="fas fa-video"></i>
+                    <i class="fas fa-ellipsis-v"></i>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be loaded here -->
+            </div>
+
+            <div class="chat-input">
+                <input type="text" placeholder="Type your message and press enter..." id="message-input">
+                <div class="input-options">
+                    <i class="fas fa-smile"></i>
+                    <i class="fas fa-paperclip"></i>
+                    <i class="fas fa-microphone"></i>
+                    <i class="fas fa-paper-plane" id="send-message-btn"></i> <!-- Added send message icon -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to get query parameters from the URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // On page load, load messages for the relevant sellers and update the sidebar
+        window.onload = function () {
+            const sellerId = getQueryParam('seller_id');
+            const businessName = getQueryParam('business_name');
+            const orderId = getQueryParam('order_id');
+            
+            // Debugging: log the values of the parameters
+            console.log('Seller ID:', sellerId);
+            console.log('Business Name:', businessName);
+            console.log('Order ID:', orderId);
+
+            // If there's a specific seller being passed, update the sidebar for them
+            if (sellerId && businessName) {
+                updateSidebarMessages(sellerId, businessName);
+            }
+
+            // Fetch and populate initial messages from the database
+            fetch(`/get-all-messages`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.messages && Array.isArray(data.messages)) {
+                        data.messages.forEach(message => {
+                            const sellerId = message.seller_id;
+                            const businessName = message.business_name;
+                            const messageText = message.message;
+                            updateSidebarMessages(sellerId, businessName, messageText);
+                        });
+                    }
+                })
+                .catch(error => console.error('Error fetching all messages:', error));
+        };
+
+        // Send a new message to the server
+        document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('send-message-btn').addEventListener('click', function () {
+        const sellerId = getQueryParam('seller_id');  // Get seller_id from URL or session
+        const senderType = 'buyer';  // Adjust depending on user type
+        const message = document.getElementById('message-input').value;
+        
+        if (message.trim() === '') {
+            alert('Please enter a message');
+            return;
+        }
+
+        fetch('/get-messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message,
+                seller_id: sellerId,
+                sender_type: senderType,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('message-input').value = '';  // Clear input after sending
+                console.log('Message sent:', data);
+                updateChatBox(message, senderType);  // Function to update the chat box with the new message
+            } else {
+                console.error('Message sending failed:', data);
+            }
+        })
+        .catch(error => console.error('Error sending message:', error));
+    });
+});
+
+function updateChatBox(message, senderType) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message');
+    
+    if (senderType === 'buyer') {
+        messageElement.classList.add('sent');
+    } else {
+        messageElement.classList.add('received');
+    }
+
+    messageElement.innerHTML = `
+        <div class="message-header">
+            <span class="sender-name">${senderType}</span>
+            <span class="time">${new Date().toLocaleTimeString()}</span>
+        </div>
+        <div class="message-body">${message}</div>
+    `;
+
+    chatMessages.appendChild(messageElement);
+}
+
+    </script>
+</body>
+</html>

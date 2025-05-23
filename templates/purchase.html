@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/profile.css">
+    <title>My Purchases</title>
+   
+    <style>
+       
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h4 class="text-center text-light">Media Verse</h4>
+        <hr class="text-light">
+        <a href="{{ url_for('homepage') }}">Home</a>
+        <a href="{{ url_for('profile') }}">Profile</a>
+        <a href="{{ url_for('purchases') }}">My Purchases</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+
+    <div class="content">
+        <div class="panel text-dark p-3 mb-4" style="background-color: #fff; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+            <h2>My Purchases</h2>
+        </div>
+
+       <!-- Tab Menu Wrapper -->
+<div class="tab-menu-wrapper">
+    <div class="tab-menu">
+        <a href="#" class="tab" onclick="showTab('all')">All</a>
+        <a href="#" class="tab" onclick="showTab('to-ship')">To Ship</a>
+        <a href="#" class="tab" onclick="showTab('to-receive')">To Receive</a>
+        <a href="#" class="tab" onclick="showTab('completed')">Completed</a>
+        <a href="#" class="tab" onclick="showTab('cancelled')">Cancelled</a>
+        
+    </div>
+</div>
+
+
+        <div id="all" class="purchase-item-container">
+            {% for order in orders %}
+                <div class="purchase-item">
+                    <h3>{{ order['product_name'] }}</h3>
+                    <p>{{ order['description'] }}</p>
+                    <p><strong>Order Total:</strong> ₱{{ order['total'] }}</p>
+                    <p><strong>Status:</strong> {{ order['status'] }}</p>
+                    <p><strong>Quantity:</strong> {{ order['quantity_order'] }}</p>
+                    <p><strong>Payment Method:</strong> {{ order['payment_method'] }}</p>
+                    <button onclick="redirectToMessages('{{ order.seller_id }}', '{{ order.seller_name }}', '{{ order.id }}', '{{ order.product_name }}', '{{ order.image_path }}', '{{ order.price}}')">
+                        Contact Seller
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+
+
+            <div id="to-ship" class="purchase-item-container" style="display: none;">
+                {% for order in orders %}
+                    {% if order['status'] == 'Confirmed' %}
+                        <div class="purchase-item">
+                            <h3>{{ order['product_name'] }}</h3>
+                            <p>{{ order['description'] }}</p>
+                            <p><strong>Order Total:</strong> ₱{{ order['total'] }}</p>
+                            <p><strong>Status:</strong> {{ order['status'] }}</p>
+                            <p><strong>Quantity:</strong> {{ order['quantity_order'] }}</p>
+                            <p><strong>Payment Method:</strong> {{ order['payment_method'] }}</p>
+                            <button>Contact Seller</button>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
+            <script>
+                // Check if there are orders with 'To Ship' status
+                const toShipOrders = document.querySelectorAll('#to-ship .purchase-item');
+                if (toShipOrders.length > 0) {
+                    document.getElementById('to-ship').style.display = 'block';
+                }
+            </script>
+            
+        
+        <div id="to-receive" class="purchase-item-container" style="display: none;">
+            {% for order in orders %}
+                {% if order['status'] == 'Shipped Out' %}
+                    <div class="purchase-item">
+                        <h3>{{ order['product_name'] }}</h3>
+                        <p>{{ order['description'] }}</p>
+                        <p><strong>Order Total:</strong> ₱{{ order['total'] }}</p>
+                        <p><strong>Status:</strong> {{ order['status'] }}</p>
+                        <p><strong>Quantity:</strong> {{ order['quantity_order'] }}</p>
+                        <p><strong>Payment Method:</strong> {{ order['payment_method'] }}</p>
+                        <button class="btn btn-success btn-received" data-order-id="{{ order['id'] }}">Received</button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+        <!-- Repeat similar sections for "Completed", "Cancelled", and "Return/Refund" -->
+        
+    
+        <div id="completed" class="purchase-item-container" style="display: none;">
+            {% for order in orders %}
+                {% if order['status'] == 'Completed' %}
+                    <div class="purchase-item">
+                        <h3>{{ order['product_name'] }}</h3>
+                        <p>{{ order['description'] }}</p>
+                        <p><strong>Order Total:</strong> ₱{{ order['total'] }}</p>
+                        <p><strong>Status:</strong> {{ order['status'] }}</p>
+                        <p><strong>Quantity:</strong> {{ order['quantity_order'] }}</p>
+                        <p><strong>Payment Method:</strong> {{ order['payment_method'] }}</p>
+                        
+                        <!-- Buy Again Button with data-* attribute -->
+                        <button class="btn btn-buy-again" data-order-id="{{ order['id'] }}">Buy Again</button>
+                        
+                        <!-- Feedback Button with data-* attribute -->
+                        <button class="btn btn-feedback" data-order-id="{{ order['id'] }}">Give Feedback</button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+        <!-- Feedback Modal -->
+        <div id="feedback-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeFeedbackModal()">&times;</span>
+                <h2>Give Feedback</h2>
+                <p>Rate this product (1 to 5 stars):</p>
+                <div id="star-rating">
+                    <span class="star" onclick="rateProduct(1)">&#9733;</span>
+                    <span class="star" onclick="rateProduct(2)">&#9733;</span>
+                    <span class="star" onclick="rateProduct(3)">&#9733;</span>
+                    <span class="star" onclick="rateProduct(4)">&#9733;</span>
+                    <span class="star" onclick="rateProduct(5)">&#9733;</span>
+                </div>
+                <textarea id="feedback-comment" placeholder="Write your comment here..."></textarea>
+                <button class="btn btn-submit-feedback" onclick="submitFeedback()">Submit Feedback</button>
+            </div>
+        </div>
+        
+        
+        
+        <div id="cancelled" class="purchase-item-container" style="display: none;">
+            {% for order in orders %}
+                {% if order['status'] == 'Cancelled' %}
+                    <div class="purchase-item">
+                        <h3>{{ order['product_name'] }}</h3>
+                        <p>{{ order['description'] }}</p>
+                        <p><strong>Order Total:</strong> ₱{{ order['total'] }}</p>
+                        <p><strong>Status:</strong> {{ order['status'] }}</p>
+                        <p><strong>Quantity:</strong> {{ order['quantity_order'] }}</p>
+                        <p><strong>Payment Method:</strong> {{ order['payment_method'] }}</p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+    
+        
+        
+        <!-- Similar sections for "To Ship", "To Receive", "Completed", "Cancelled", "Return/Refund" -->
+
+        <script>
+            
+        function showTab(tabId) {
+            // Hide all purchase item containers
+            document.querySelectorAll('.purchase-item-container').forEach(container => {
+                container.style.display = 'none';
+            });
+
+            // Display the selected tab content
+            const activeTab = document.getElementById(tabId);
+            if (activeTab) {
+                activeTab.style.display = 'block';
+            }
+
+            // Update active class on the menu
+            document.querySelectorAll('.tab-menu a').forEach(link => {
+                link.classList.remove('active-tab');
+            });
+
+            // Add active-tab class to the clicked tab
+            event.target.classList.add('active-tab');
+        }
+
+        // Display the "All" tab content by default on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            showTab('all');
+        });
+        </script>
+         <script>
+            function redirectToMessages(sellerId, sellerName, orderId, productName, productImage, productPrice) {
+                window.location.href = '/contact-seller?seller_id=' + sellerId + '&seller_name=' + sellerName + '&order_id=' + orderId + '&product_name=' + productName + '&image_path=' + productImage + '&price=' + productPrice;
+            }
+            function redirectToMessages(sellerId, sellerName, orderId, productName, productImage, productPrice) {
+// Ensure all required parameters are being passed
+window.location.href = '/contact-seller?seller_id=' + sellerId + 
+                    '&seller_name=' + encodeURIComponent(sellerName) + 
+                    '&order_id=' + orderId + 
+                    '&product_name=' + encodeURIComponent(productName) + 
+                    '&image_path=' + encodeURIComponent(productImage) + 
+                    '&price=' + productPrice;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Select all "Received" buttons
+    const receivedButtons = document.querySelectorAll('.btn-received');
+
+    // Attach event listeners to each button
+    receivedButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const orderId = button.getAttribute('data-order-id'); // Get the order ID from the data attribute
+            updateOrderStatus(orderId, 'Completed');
+        });
+    });
+});
+
+// Function to update order status
+function updateOrderStatus(orderId, newStatus) {
+    fetch(`/update_status/${orderId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert('Order status updated successfully!');
+
+                // Move the order to the Completed tab
+                const button = document.querySelector(`[data-order-id="${orderId}"]`);
+                const purchaseItem = button.closest('.purchase-item');
+                
+                // Remove from current tab
+                purchaseItem.remove();
+
+                // Append to the Completed tab
+                const completedTab = document.getElementById('completed');
+                completedTab.appendChild(purchaseItem);
+
+                // Update the status text
+                const statusElement = purchaseItem.querySelector('p strong:contains("Status:")');
+                if (statusElement) {
+                    statusElement.textContent = `Status: ${newStatus}`;
+                }
+            } else if (data.error) {
+                alert(`Error: ${data.error}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+
+        });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners for the Buy Again buttons
+    const buyAgainButtons = document.querySelectorAll('.btn-buy-again');
+    buyAgainButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const orderId = button.getAttribute('data-order-id');
+            buyAgain(orderId);
+        });
+    });
+
+    // Add event listeners for the Feedback buttons
+    const feedbackButtons = document.querySelectorAll('.btn-feedback');
+    feedbackButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const orderId = button.getAttribute('data-order-id');
+            openFeedbackModal(orderId);
+        });
+    });
+});
+
+// Function to handle the Buy Again action
+function buyAgain(orderId) {
+    alert("Order " + orderId + " will be purchased again.");
+    // Implement logic to add the product to the cart here.
+}
+
+// Function to open the feedback modal
+function openFeedbackModal(orderId) {
+    document.getElementById('feedback-modal').style.display = 'block';
+    document.getElementById('feedback-modal').setAttribute('data-order-id', orderId);
+}
+
+// Function to close the feedback modal
+function closeFeedbackModal() {
+    document.getElementById('feedback-modal').style.display = 'none';
+    selectedRating = 0;
+    // Clear previous star selections
+    const stars = document.querySelectorAll('#star-rating .star');
+    stars.forEach(star => star.classList.remove('selected'));
+}
+
+// Function to rate the product
+function rateProduct(rating) {
+    selectedRating = rating;
+    const stars = document.querySelectorAll('#star-rating .star');
+    stars.forEach((star, index) => {
+        if (index < rating) {
+            star.classList.add('selected');
+        } else {
+            star.classList.remove('selected');
+        }
+    });
+}
+
+// Function to submit feedback
+function submitFeedback() {
+    const orderId = document.getElementById('feedback-modal').getAttribute('data-order-id');
+    const comment = document.getElementById('feedback-comment').value;
+
+    if (selectedRating === 0) {
+        alert("Please select a rating.");
+        return;
+    }
+
+    // Send the feedback to the server
+    fetch('/submit_feedback', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            order_id: orderId,
+            rating: selectedRating,
+            comment: comment
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            alert("Feedback submitted successfully!");
+            closeFeedbackModal();
+        } else if (data.error) {
+            alert("Error: " + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("An error occurred. Please try again.");
+    });
+}
+
+            </script>
+    </div>
+</body>
+</html>

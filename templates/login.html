@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #63C5DA;
+            --primary-dark: #4fabbc;
+            --primary-light: #89d3e3;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --white: #ffffff;
+            --gray-light: #f5f7fa;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .background-shape {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .shape-1 {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            left: -100px;
+        }
+        
+        .shape-2 {
+            width: 300px;
+            height: 300px;
+            bottom: -50px;
+            right: -50px;
+        }
+        
+        .logo-container {
+            position: absolute;
+            top: 30px;
+            left: 50px;
+            max-width: 300px;
+        }
+        
+        .logo {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
+        }
+        
+        .form-container {
+            display: flex;
+            width: 900px;
+            max-width: 90%;
+            background-color: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            z-index: 10;
+        }
+        
+        .image-side {
+            flex: 1;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .image-side::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://via.placeholder.com/800x1200') center/cover;
+            opacity: 0.15;
+        }
+        
+        .logo-column {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo-column img {
+            max-width: 80%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        
+        .form-side {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .form-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-header h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .form-header p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .input-field {
+            position: relative;
+        }
+        
+        .input-field input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e1e5eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: var(--gray-light);
+        }
+        
+        .input-field input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 197, 218, 0.2);
+            outline: none;
+            background-color: var(--white);
+        }
+        
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        
+        .forgot-password a {
+            color: var(--primary-color);
+            font-size: 0.85rem;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #e1e5eb;
+        }
+        
+        .divider::before {
+            margin-right: 10px;
+        }
+        
+        .divider::after {
+            margin-left: 10px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .footer p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-container {
+                flex-direction: column;
+                width: 95%;
+            }
+            
+            .image-side {
+                display: none;
+            }
+            
+            .logo-container {
+                position: relative;
+                top: 0;
+                left: 0;
+                text-align: center;
+                margin: 20px auto;
+            }
+            
+            .form-side {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-shape shape-1"></div>
+    <div class="background-shape shape-2"></div>
+    
+    <!-- Logo container removed as requested -->
+    
+    <div class="form-container">
+        <div class="image-side">
+            <div class="logo-column">
+                <img src="../static/image/loglog2.png" alt="Logo">
+            </div>
+        </div>
+        
+        <div class="form-side">
+            <div class="form-header">
+                <h2>Login</h2>
+                <p>Please enter your credentials to access your account</p>
+            </div>
+            
+            <form action="{{ url_for('login') }}" method="POST">
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <div class="input-field">
+                        <input type="email" id="email" name="Email" placeholder="Enter your email address" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <div class="input-field">
+                        <input type="password" id="password" name="Password" placeholder="Enter your password" required>
+                    </div>
+                </div>
+
+                
+
+                <button type="submit" class="btn">Login</button>
+                
+                <div class="divider">or</div>
+                
+                <div class="footer">
+                    <p>Don't have an account? <a href="{{ url_for('formsreg') }}">Register Now</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>

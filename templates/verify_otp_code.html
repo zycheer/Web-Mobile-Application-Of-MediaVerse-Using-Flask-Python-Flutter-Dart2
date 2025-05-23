@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verify OTP</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #63C5DA;
+      --primary-dark: #4fabbc;
+      --primary-light: #89d3e3;
+      --text-dark: #333333;
+      --text-light: #666666;
+      --white: #ffffff;
+      --gray-light: #f5f7fa;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .background-shape {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      z-index: 1;
+    }
+
+    .shape-1 {
+      width: 400px;
+      height: 400px;
+      top: -100px;
+      left: -100px;
+    }
+
+    .shape-2 {
+      width: 300px;
+      height: 300px;
+      bottom: -50px;
+      right: -50px;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 450px;
+      background-color: var(--white);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .logo {
+      max-width: 150px;
+      margin: 0 auto 20px;
+      display: block;
+    }
+
+    h2 {
+      color: var(--primary-color);
+      font-weight: 600;
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-dark);
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 1px solid #e1e5eb;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: var(--gray-light);
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 197, 218, 0.2);
+      outline: none;
+      background-color: var(--white);
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background-color: var(--primary-color);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .resend {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+    }
+
+    .resend a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .resend a:hover {
+      text-decoration: underline;
+    }
+
+    .messages {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 15px;
+    }
+
+    .messages li {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .flash.success {
+      color: green;
+    }
+
+    .flash.danger {
+      color: red;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      .logo {
+        max-width: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-shape shape-1"></div>
+  <div class="background-shape shape-2"></div>
+
+  <div class="container">
+    <!-- Logo -->
+    <img src="../static/image/loglog2.png" alt="Logo" class="logo">
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="messages">
+          {% for category, message in messages %}
+            <li class="flash {{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <h2>Verify Your OTP</h2>
+    <p>Please enter the OTP code sent to your email</p>
+
+    <form action="/verify_otp_code" method="POST">
+      <label for="otp">OTP Code</label>
+      <input type="text" id="otp" name="otp" placeholder="Enter your OTP" required>
+      <button type="submit">Verify</button>
+    </form>
+
+    <div class="resend">
+      <p>Didn't receive the OTP? <a href="/verify_otp">Resend OTP</a></p>
+    </div>
+  </div>
+</body>
+</html>

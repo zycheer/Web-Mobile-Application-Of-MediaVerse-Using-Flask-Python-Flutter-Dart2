@@ -1,0 +1,476 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f7fa;
+    color: #343a40;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.sidebar {
+    height: 100vh;
+    position: fixed;
+    width: 250px;
+    background: linear-gradient(45deg, #343a40, #495057);
+    padding-top: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    border-top-right-radius: 20px; /* Curved top-right corner */
+    border-bottom-right-radius: 20px; /* Curved bottom-right corner */
+}
+
+
+.sidebar a {
+    color: #fff;
+    padding: 15px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: background 0.3s, color 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: #343a40;
+}
+
+.sidebar a.active {
+    
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+    overflow-x: hidden;
+}
+
+.tab-menu-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow to the wrapper */
+    border-radius: 15px; /* Optional: rounded corners for the tab menu wrapper */
+}
+
+.tab-menu {
+    display: flex;
+    justify-content: center;  /* Center the buttons horizontally */
+    gap: 15px;
+    background-color: #fff; /* Background color for the tab menu */
+    padding: 10px;
+    border-radius: 15px; /* Optional: rounded corners for the tab menu */
+    width: 100%;
+}
+
+.tab-menu a {
+    padding: 10px 20px;
+    background-color: #343a40;
+    color: #fff;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Added box-shadow transition */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Added shadow to the tab menu buttons */
+}
+
+.tab-menu a:hover {
+    background-color: #fff;
+    color: #343a40;
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+}
+
+
+
+
+.purchase-item {
+    background-color: #fff;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow */
+    transition: box-shadow 0.3s ease; /* Smooth transition on hover */
+}
+
+.purchase-item:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+}
+
+
+/* Modal Overlay */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-top: 60px;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.modal-header h5 {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.close {
+    font-size: 1.5rem;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #007bff;
+}
+
+/* Modal Body */
+.modal-body {
+    padding: 20px 0;
+}
+
+/* Modal Footer */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 10px;
+}
+
+/* Button Styling */
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Feedback Star Rating */
+#star-rating {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.star {
+    font-size: 2rem;
+    color: #ccc;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.star:hover,
+.star.selected {
+    color: #ffcc00;
+    transform: scale(1.1);
+}
+
+/* Input Fields */
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    resize: vertical;
+    font-size: 1rem;
+    color: #333;
+}
+
+textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Submit Button */
+.btn-submit-feedback {
+    background-color: #17a2b8;
+    color: white;
+    font-weight: bold;
+    padding: 12px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-submit-feedback:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+/* Modal Animations */
+.modal-content {
+    animation: modalIn 0.5s ease-out;
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    /* Adjust modal for smaller screens */
+    .modal-content {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .modal-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .modal-footer {
+        justify-content: center;
+    }
+}
+
+
+.star {
+    font-size: 24px;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.star:hover,
+.star.selected {
+    color: #ffcc00;
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: static;
+        width: 100%;
+    }
+
+    .content {
+        margin-left: 0;
+    }
+
+    .tab-menu {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+ /* Custom styles for Buy Again and Feedback buttons */
+ .btn-buy-again {
+    background-color: #17a2b8;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+}
+.btn-buy-again:hover {
+    background-color: #0056b3;
+}
+
+.btn-feedback {
+    background-color: #28a745;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+}
+.btn-feedback:hover {
+    background-color: #218838;
+}
+
+.modal-content {
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.star {
+    font-size: 2rem;
+    color: #ccc;
+    cursor: pointer;
+}
+.star.selected {
+    color: gold;
+}
+
+
+/* Feedback Modal Styling */
+.modal-content {
+    padding: 30px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.modal-content h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.modal-content p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+#star-rating {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.star {
+    font-size: 3rem;
+    color: #ccc;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.star:hover,
+.star.selected {
+    color: #ffcc00;
+    transform: scale(1.1);
+}
+
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    resize: vertical;
+    font-size: 1rem;
+    color: #333;
+}
+
+textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.btn-submit-feedback {
+    background-color: #17a2b8;
+    color: white;
+    font-weight: bold;
+    padding: 12px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-submit-feedback:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 2rem;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #007bff;
+}
+
+.modal-content {
+    animation: modalIn 0.5s ease-out;
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 90%;
+        padding: 20px;
+    }
+}
+
